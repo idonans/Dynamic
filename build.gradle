@@ -19,7 +19,7 @@ task clean(type: Delete) {
 }
 
 // bintray upload command
-// ./gradlew :uniontype:clean :uniontype:install :uniontype:bintrayUpload
+// ./gradlew :dynamic:clean :dynamic:install :dynamic:bintrayUpload
 
 // maven local command
-// ./gradlew :uniontype:clean :uniontype:uploadArchives
+// ./gradlew :dynamic:clean :dynamic:uploadArchives
