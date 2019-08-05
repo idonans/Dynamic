@@ -102,7 +102,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         }
         view.showPrePageLoading();
 
-        mInitRequestHolder.set(Single.just(this)
+        mPrePageRequestHolder.set(Single.just(this)
                 .flatMap((Function<Object, SingleSource<Collection<E>>>) object -> createPrePageRequest())
                 .map(Objects::requireNonNull)
                 .subscribeOn(Schedulers.io())
@@ -140,7 +140,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         }
         view.showNextPageLoading();
 
-        mInitRequestHolder.set(Single.just(this)
+        mNextPageRequestHolder.set(Single.just(this)
                 .flatMap((Function<Object, SingleSource<Collection<E>>>) object -> createNextPageRequest())
                 .map(Objects::requireNonNull)
                 .subscribeOn(Schedulers.io())
