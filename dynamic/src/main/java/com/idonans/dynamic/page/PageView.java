@@ -6,6 +6,8 @@ import java.util.Collection;
 
 public interface PageView<E> extends DynamicView {
 
+    boolean hasPageContent();
+
     void showInitLoading();
 
     void hideInitLoading();
