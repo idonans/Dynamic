@@ -1,7 +1,9 @@
 package com.idonans.dynamic.page;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.idonans.dynamic.DynamicPresenter;
@@ -19,9 +21,9 @@ import timber.log.Timber;
 
 public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPresenter<T> {
 
-    protected final DisposableHolder mInitRequestHolder = new DisposableHolder();
-    protected final DisposableHolder mPrePageRequestHolder = new DisposableHolder();
-    protected final DisposableHolder mNextPageRequestHolder = new DisposableHolder();
+    private final DisposableHolder mInitRequestHolder = new DisposableHolder();
+    private final DisposableHolder mPrePageRequestHolder = new DisposableHolder();
+    private final DisposableHolder mNextPageRequestHolder = new DisposableHolder();
     private final DisposableHolder[] mRequestHolders = {mInitRequestHolder, mPrePageRequestHolder, mNextPageRequestHolder};
 
     public PagePresenter(T view) {
@@ -33,7 +35,8 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      *
      * @param excepts
      */
-    public void clearRequestExcept(DisposableHolder... excepts) {
+    @UiThread
+    private void clearRequestExcept(DisposableHolder... excepts) {
         for (DisposableHolder target : mRequestHolders) {
             boolean matchExcept = false;
             if (excepts != null) {
@@ -53,6 +56,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     /**
      * 请求初始数据
      */
+    @UiThread
     public void requestInit() {
         // 请求初始数据时，中断所有的旧请求
         clearRequestExcept();
@@ -91,6 +95,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     /**
      * 请求上一页数据
      */
+    @UiThread
     public void requestPrePage() {
         // 请求上一页数据时，可以与下一页请求同时存在
         clearRequestExcept(mNextPageRequestHolder);
@@ -129,6 +134,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     /**
      * 请求下一页数据
      */
+    @UiThread
     public void requestNextPage() {
         // 请求下一页数据时，可以与上一页请求同时存在
         clearRequestExcept(mPrePageRequestHolder);
@@ -168,10 +174,14 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @Nullable
     protected abstract SingleSource<Collection<E>> createInitRequest() throws Exception;
 
+    @CallSuper
+    @UiThread
     protected void onInitRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
         view.onInitDataLoad(items);
     }
 
+    @CallSuper
+    @UiThread
     protected void onInitRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
         view.onInitDataLoadFail(e);
     }
@@ -180,10 +190,14 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @Nullable
     protected abstract SingleSource<Collection<E>> createPrePageRequest() throws Exception;
 
+    @CallSuper
+    @UiThread
     protected void onPrePageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
         view.onPrePageDataLoad(items);
     }
 
+    @CallSuper
+    @UiThread
     protected void onPrePageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
         view.onPrePageDataLoadFail(e);
     }
@@ -192,10 +206,14 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @Nullable
     protected abstract SingleSource<Collection<E>> createNextPageRequest() throws Exception;
 
+    @CallSuper
+    @UiThread
     protected void onNextPageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
         view.onNextPageDataLoad(items);
     }
 
+    @CallSuper
+    @UiThread
     protected void onNextPageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
         view.onNextPageDataLoadFail(e);
     }
