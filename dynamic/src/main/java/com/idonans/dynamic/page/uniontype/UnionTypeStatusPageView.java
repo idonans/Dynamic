@@ -29,14 +29,18 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public UnionTypeStatusPageView(@NonNull UnionTypeAdapter adapter) {
         mAdapter = adapter;
         mAdapter.setOnLoadPrePageListener(() -> {
-            if (mPresenter != null) {
-                mPresenter.requestPrePage();
+            if (mPresenter == null) {
+                Timber.e("presenter is null");
+                return;
             }
+            mPresenter.requestPrePage();
         });
         mAdapter.setOnLoadNextPageListener(() -> {
-            if (mPresenter != null) {
-                mPresenter.requestNextPage();
+            if (mPresenter == null) {
+                Timber.e("presenter is null");
+                return;
             }
+            mPresenter.requestNextPage();
         });
     }
 
