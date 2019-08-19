@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import com.google.common.collect.Lists;
 import com.idonans.dynamic.page.PageView;
 import com.idonans.dynamic.page.StatusPagePresenter;
-import com.idonans.uniontype.GroupArrayList;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeAdapter;
 import com.idonans.uniontype.UnionTypeItemObject;
@@ -61,17 +60,16 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             return;
         }
         host.getRecyclerView().postOnAnimation(() -> {
-            mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
             boolean hasPageContent = hasPageContent();
             if (!hasPageContent) {
-                mAdapter.appendGroupItems(
+                mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
                                 new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_LARGE, new Object())
                         )
                 );
             } else {
-                mAdapter.appendGroupItems(
+                mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
                                 new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
@@ -98,15 +96,13 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             Timber.e("host is null");
             return;
         }
-        host.getRecyclerView().postOnAnimation(() -> {
-            mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
-            mAdapter.appendGroupItems(
-                    GROUP_HEADER_STATUS,
-                    Lists.newArrayList(
-                            new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
-                    )
-            );
-        });
+        host.getRecyclerView().postOnAnimation(() ->
+                mAdapter.setGroupItems(
+                        GROUP_HEADER_STATUS,
+                        Lists.newArrayList(
+                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
+                        )
+                ));
     }
 
     @Override
@@ -126,15 +122,13 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             Timber.e("host is null");
             return;
         }
-        host.getRecyclerView().postOnAnimation(() -> {
-            mAdapter.clearGroupItems(GROUP_FOOTER_STATUS);
-            mAdapter.appendGroupItems(
-                    GROUP_FOOTER_STATUS,
-                    Lists.newArrayList(
-                            new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
-                    )
-            );
-        });
+        host.getRecyclerView().postOnAnimation(() ->
+                mAdapter.setGroupItems(
+                        GROUP_FOOTER_STATUS,
+                        Lists.newArrayList(
+                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
+                        )
+                ));
     }
 
     @Override
@@ -154,11 +148,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             Timber.e("host is null");
             return;
         }
-        host.getRecyclerView().postOnAnimation(() -> {
-            GroupArrayList data = new GroupArrayList();
-            data.setGroupItems(GROUP_DEFAULT, items);
-            mAdapter.setData(data);
-        });
+        host.getRecyclerView().postOnAnimation(() -> mAdapter.setGroupItems(GROUP_DEFAULT, items));
     }
 
     @Override
@@ -169,10 +159,9 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             return;
         }
         host.getRecyclerView().postOnAnimation(() -> {
-            mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
             boolean hasPageContent = hasPageContent();
             if (!hasPageContent) {
-                mAdapter.appendGroupItems(
+                mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
                                 new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_LARGE, (OnRetryActionListener) () -> {
@@ -185,7 +174,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         )
                 );
             } else {
-                mAdapter.appendGroupItems(
+                mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
                                 new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
@@ -218,21 +207,19 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             Timber.e("host is null");
             return;
         }
-        host.getRecyclerView().postOnAnimation(() -> {
-            mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
-            mAdapter.appendGroupItems(
-                    GROUP_HEADER_STATUS,
-                    Lists.newArrayList(
-                            new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
-                                if (mPresenter == null) {
-                                    Timber.e("presenter is null");
-                                    return;
-                                }
-                                mPresenter.requestPrePage(true);
-                            })
-                    )
-            );
-        });
+        host.getRecyclerView().postOnAnimation(() ->
+                mAdapter.setGroupItems(
+                        GROUP_HEADER_STATUS,
+                        Lists.newArrayList(
+                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
+                                    if (mPresenter == null) {
+                                        Timber.e("presenter is null");
+                                        return;
+                                    }
+                                    mPresenter.requestPrePage(true);
+                                })
+                        )
+                ));
     }
 
     @Override
@@ -252,20 +239,18 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             Timber.e("host is null");
             return;
         }
-        host.getRecyclerView().postOnAnimation(() -> {
-            mAdapter.clearGroupItems(GROUP_FOOTER_STATUS);
-            mAdapter.appendGroupItems(
-                    GROUP_FOOTER_STATUS,
-                    Lists.newArrayList(
-                            new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
-                                if (mPresenter == null) {
-                                    Timber.e("presenter is null");
-                                    return;
-                                }
-                                mPresenter.requestNextPage(true);
-                            })
-                    )
-            );
-        });
+        host.getRecyclerView().postOnAnimation(() ->
+                mAdapter.setGroupItems(
+                        GROUP_FOOTER_STATUS,
+                        Lists.newArrayList(
+                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
+                                    if (mPresenter == null) {
+                                        Timber.e("presenter is null");
+                                        return;
+                                    }
+                                    mPresenter.requestNextPage(true);
+                                })
+                        )
+                ));
     }
 }
