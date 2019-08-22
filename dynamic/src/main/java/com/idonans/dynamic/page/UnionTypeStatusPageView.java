@@ -153,7 +153,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             mAdapter.clearGroupItems(GROUP_DEFAULT);
             mAdapter.setGroupItems(
                     GROUP_INIT_STATUS,
-                    Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                    Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_EMPTY_DATA, new Object()))
             );
         });
     }
