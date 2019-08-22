@@ -18,6 +18,7 @@ import timber.log.Timber;
 public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     public static final int GROUP_HEADER_STATUS = -10000;
+    public static final int GROUP_INIT_STATUS = -9999;
     public static final int GROUP_DEFAULT = 1;
     public static final int GROUP_FOOTER_STATUS = 10000;
 
@@ -65,14 +66,14 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             boolean hasPageContent = hasPageContent();
             if (!hasPageContent) {
                 mAdapter.setGroupItems(
-                        GROUP_HEADER_STATUS,
+                        GROUP_INIT_STATUS,
                         Lists.newArrayList(
                                 new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_LARGE, new Object())
                         )
                 );
             } else {
                 mAdapter.setGroupItems(
-                        GROUP_HEADER_STATUS,
+                        GROUP_INIT_STATUS,
                         Lists.newArrayList(
                                 new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
@@ -84,7 +85,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Override
     public void hideInitLoading() {
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> mAdapter.clearGroupItems(GROUP_HEADER_STATUS));
+        host.getRecyclerView().postOnAnimation(() -> mAdapter.clearGroupItems(GROUP_INIT_STATUS));
     }
 
     @Override
@@ -135,7 +136,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         host.getRecyclerView().postOnAnimation(() -> {
             mAdapter.clearGroupItems(GROUP_DEFAULT);
             mAdapter.setGroupItems(
-                    GROUP_HEADER_STATUS,
+                    GROUP_INIT_STATUS,
                     Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
             );
         });
@@ -148,7 +149,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             boolean hasPageContent = hasPageContent();
             if (!hasPageContent) {
                 mAdapter.setGroupItems(
-                        GROUP_HEADER_STATUS,
+                        GROUP_INIT_STATUS,
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE,
@@ -165,7 +166,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 );
             } else {
                 mAdapter.setGroupItems(
-                        GROUP_HEADER_STATUS,
+                        GROUP_INIT_STATUS,
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL,
