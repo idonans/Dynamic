@@ -1,11 +1,11 @@
-package com.idonans.dynamic.page.uniontype;
+package com.idonans.dynamic.page;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.idonans.dynamic.page.PageView;
-import com.idonans.dynamic.page.StatusPagePresenter;
+import com.idonans.dynamic.page.uniontype.OnRetryActionListener;
+import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeAdapter;
 import com.idonans.uniontype.UnionTypeItemObject;
@@ -65,14 +65,14 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_LARGE, new Object())
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_LARGE, new Object())
                         )
                 );
             } else {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
                 );
             }
@@ -100,7 +100,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
                 ));
     }
@@ -126,7 +126,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_FOOTER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOADING_SMALL, new Object())
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
                 ));
     }
@@ -164,7 +164,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_LARGE, (OnRetryActionListener) () -> {
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE, (OnRetryActionListener) () -> {
                                     if (mPresenter == null) {
                                         Timber.e("presenter is null");
                                         return;
@@ -177,7 +177,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
                                     if (mPresenter == null) {
                                         Timber.e("presenter is null");
                                         return;
@@ -211,7 +211,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
                                     if (mPresenter == null) {
                                         Timber.e("presenter is null");
                                         return;
@@ -243,7 +243,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_FOOTER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypePageStatus.UNION_TYPE_PAGE_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
+                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, (OnRetryActionListener) () -> {
                                     if (mPresenter == null) {
                                         Timber.e("presenter is null");
                                         return;

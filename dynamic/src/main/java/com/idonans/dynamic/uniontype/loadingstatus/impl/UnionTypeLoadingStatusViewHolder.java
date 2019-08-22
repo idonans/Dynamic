@@ -1,4 +1,4 @@
-package com.idonans.dynamic.page.uniontype.impl;
+package com.idonans.dynamic.uniontype.loadingstatus.impl;
 
 import android.view.View;
 
@@ -10,9 +10,9 @@ import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeViewHolder;
 
-public class UnionTypeStatusLoadFailViewHolder extends UnionTypeViewHolder<Object> {
+public class UnionTypeLoadingStatusViewHolder extends UnionTypeViewHolder<Object> {
 
-    public UnionTypeStatusLoadFailViewHolder(@NonNull Host host, int layout) {
+    public UnionTypeLoadingStatusViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
     }
 
