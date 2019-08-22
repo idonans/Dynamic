@@ -27,6 +27,9 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Nullable
     private StatusPagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> mPresenter;
 
+    private boolean mAlwaysHidePrePageNoMoreData;
+    private boolean mAlwaysHideNextPageNoMoreData;
+
     public UnionTypeStatusPageView(@NonNull UnionTypeAdapter adapter) {
         mAdapter = adapter;
         mAdapter.setOnLoadPrePageListener(() -> {
@@ -47,6 +50,19 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     public void setPresenter(@Nullable StatusPagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> presenter) {
         mPresenter = presenter;
+    }
+
+    public void setAlwaysHidePrePageNoMoreData(boolean alwaysHidePrePageNoMoreData) {
+        mAlwaysHidePrePageNoMoreData = alwaysHidePrePageNoMoreData;
+    }
+
+    public void setAlwaysHideNextPageNoMoreData(boolean alwaysHideNextPageNoMoreData) {
+        mAlwaysHideNextPageNoMoreData = alwaysHideNextPageNoMoreData;
+    }
+
+    public void setAlwaysHideNoMoreData(boolean alwaysHideNoMoreData) {
+        mAlwaysHidePrePageNoMoreData = alwaysHideNoMoreData;
+        mAlwaysHideNextPageNoMoreData = alwaysHideNoMoreData;
     }
 
     @Override
@@ -194,11 +210,16 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Override
     public void onPrePageDataEmpty() {
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() ->
-                mAdapter.setGroupItems(
-                        GROUP_HEADER_STATUS,
-                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
-                )
+        host.getRecyclerView().postOnAnimation(() -> {
+                    if (mAlwaysHidePrePageNoMoreData) {
+                        mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
+                    } else {
+                        mAdapter.setGroupItems(
+                                GROUP_HEADER_STATUS,
+                                Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                        );
+                    }
+                }
         );
     }
 
@@ -233,11 +254,16 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Override
     public void onNextPageDataEmpty() {
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() ->
-                mAdapter.setGroupItems(
-                        GROUP_FOOTER_STATUS,
-                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
-                )
+        host.getRecyclerView().postOnAnimation(() -> {
+                    if (mAlwaysHideNextPageNoMoreData) {
+                        mAdapter.clearGroupItems(GROUP_FOOTER_STATUS);
+                    } else {
+                        mAdapter.setGroupItems(
+                                GROUP_FOOTER_STATUS,
+                                Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                        );
+                    }
+                }
         );
     }
 
