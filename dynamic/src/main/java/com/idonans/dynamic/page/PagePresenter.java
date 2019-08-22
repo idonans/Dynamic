@@ -66,6 +66,8 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
             Timber.e("view is null");
             return;
         }
+        view.hidePrePageLoading();
+        view.hideNextPageLoading();
         view.showInitLoading();
 
         mInitRequestHolder.set(Single.just(this)
@@ -105,6 +107,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
             Timber.e("view is null");
             return;
         }
+        view.hideInitLoading();
         view.showPrePageLoading();
 
         mPrePageRequestHolder.set(Single.just(this)
@@ -144,6 +147,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
             Timber.e("view is null");
             return;
         }
+        view.hideInitLoading();
         view.showNextPageLoading();
 
         mNextPageRequestHolder.set(Single.just(this)
