@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(adapter);
 
         mView = new UnionTypeStatusPageView(adapter);
+        mView.setAlwaysHidePrePageNoMoreData(true);
         mPresenter = new Presenter(mView);
         mView.setPresenter(mPresenter);
         mPresenter.requestInit();
