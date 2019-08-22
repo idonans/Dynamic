@@ -182,6 +182,9 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @UiThread
     protected void onInitRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
         view.onInitDataLoad(items);
+        if (items.isEmpty()) {
+            view.onInitDataEmpty();
+        }
     }
 
     @CallSuper
@@ -198,6 +201,9 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @UiThread
     protected void onPrePageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
         view.onPrePageDataLoad(items);
+        if (items.isEmpty()) {
+            view.onPrePageDataEmpty();
+        }
     }
 
     @CallSuper
@@ -214,6 +220,9 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @UiThread
     protected void onNextPageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
         view.onNextPageDataLoad(items);
+        if (items.isEmpty()) {
+            view.onNextPageDataEmpty();
+        }
     }
 
     @CallSuper

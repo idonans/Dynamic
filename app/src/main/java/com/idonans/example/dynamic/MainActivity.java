@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             return Single.fromCallable(() -> {
                 Threads.sleepQuietly(2000);
                 List<UnionTypeItemObject> items = new ArrayList<>();
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 10 && mPrePageNo > -3; i++) {
                     items.add(UnionTypeItemObject.valueOf(UnionType.UNION_TYPE_TEXT, "page " + (mPrePageNo - 1) + " #" + i));
                 }
                 return items;
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             return Single.fromCallable(() -> {
                 Threads.sleepQuietly(2000);
                 List<UnionTypeItemObject> items = new ArrayList<>();
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 10 && mNextPageNo < 3; i++) {
                     items.add(UnionTypeItemObject.valueOf(UnionType.UNION_TYPE_TEXT, "page " + (mNextPageNo + 1) + " #" + i));
                 }
                 return items;

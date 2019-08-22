@@ -94,7 +94,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
+                                UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
                 ));
     }
@@ -112,7 +112,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_FOOTER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
+                                UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
                 ));
     }
@@ -130,6 +130,18 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     }
 
     @Override
+    public void onInitDataEmpty() {
+        Host host = mAdapter.getHost();
+        host.getRecyclerView().postOnAnimation(() -> {
+            mAdapter.clearGroupItems(GROUP_DEFAULT);
+            mAdapter.setGroupItems(
+                    GROUP_HEADER_STATUS,
+                    Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+            );
+        });
+    }
+
+    @Override
     public void onInitDataLoadFail(@NonNull Throwable e) {
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() -> {
@@ -138,7 +150,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(
+                                UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE,
                                         (LoadingStatusCallbackHost) () ->
                                                 (LoadingStatusCallback) () -> {
@@ -155,7 +167,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(
+                                UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL,
                                         (LoadingStatusCallbackHost) () ->
                                                 (LoadingStatusCallback) () -> {
@@ -179,13 +191,24 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     }
 
     @Override
+    public void onPrePageDataEmpty() {
+        Host host = mAdapter.getHost();
+        host.getRecyclerView().postOnAnimation(() ->
+                mAdapter.setGroupItems(
+                        GROUP_HEADER_STATUS,
+                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                )
+        );
+    }
+
+    @Override
     public void onPrePageDataLoadFail(@NonNull Throwable e) {
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(
+                                UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL,
                                         (LoadingStatusCallbackHost) () ->
                                                 (LoadingStatusCallback) () -> {
@@ -207,13 +230,24 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     }
 
     @Override
+    public void onNextPageDataEmpty() {
+        Host host = mAdapter.getHost();
+        host.getRecyclerView().postOnAnimation(() ->
+                mAdapter.setGroupItems(
+                        GROUP_FOOTER_STATUS,
+                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                )
+        );
+    }
+
+    @Override
     public void onNextPageDataLoadFail(@NonNull Throwable e) {
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
                         GROUP_FOOTER_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(
+                                UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL,
                                         (LoadingStatusCallbackHost) () ->
                                                 (LoadingStatusCallback) () -> {
