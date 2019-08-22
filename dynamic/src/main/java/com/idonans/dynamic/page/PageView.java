@@ -1,5 +1,7 @@
 package com.idonans.dynamic.page;
 
+import androidx.annotation.NonNull;
+
 import com.idonans.dynamic.DynamicView;
 
 import java.util.Collection;
@@ -20,16 +22,16 @@ public interface PageView<E> extends DynamicView {
 
     void hideNextPageLoading();
 
-    void onInitDataLoad(Collection<E> items);
+    void onInitDataLoad(@NonNull Collection<E> items);
 
-    void onInitDataLoadFail(Throwable e);
+    void onInitDataLoadFail(@NonNull Throwable e);
 
-    void onPrePageDataLoad(Collection<E> items);
+    void onPrePageDataLoad(@NonNull Collection<E> items);
 
-    void onPrePageDataLoadFail(Throwable e);
+    void onPrePageDataLoadFail(@NonNull Throwable e);
 
-    void onNextPageDataLoad(Collection<E> items);
+    void onNextPageDataLoad(@NonNull Collection<E> items);
 
-    void onNextPageDataLoadFail(Throwable e);
+    void onNextPageDataLoadFail(@NonNull Throwable e);
 
 }

@@ -44,7 +44,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         });
     }
 
-    public void setPresenter(StatusPagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> presenter) {
+    public void setPresenter(@Nullable StatusPagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> presenter) {
         mPresenter = presenter;
     }
 
@@ -61,10 +61,6 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Override
     public void showInitLoading() {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> {
             boolean hasPageContent = hasPageContent();
             if (!hasPageContent) {
@@ -88,20 +84,12 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Override
     public void hideInitLoading() {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> mAdapter.clearGroupItems(GROUP_HEADER_STATUS));
     }
 
     @Override
     public void showPrePageLoading() {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
@@ -114,20 +102,12 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Override
     public void hidePrePageLoading() {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> mAdapter.clearGroupItems(GROUP_HEADER_STATUS));
     }
 
     @Override
     public void showNextPageLoading() {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
                         GROUP_FOOTER_STATUS,
@@ -140,30 +120,18 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     @Override
     public void hideNextPageLoading() {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> mAdapter.clearGroupItems(GROUP_FOOTER_STATUS));
     }
 
     @Override
-    public void onInitDataLoad(Collection<UnionTypeItemObject> items) {
+    public void onInitDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> mAdapter.setGroupItems(GROUP_DEFAULT, items));
     }
 
     @Override
-    public void onInitDataLoadFail(Throwable e) {
+    public void onInitDataLoadFail(@NonNull Throwable e) {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> {
             boolean hasPageContent = hasPageContent();
             if (!hasPageContent) {
@@ -205,22 +173,14 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     }
 
     @Override
-    public void onPrePageDataLoad(Collection<UnionTypeItemObject> items) {
+    public void onPrePageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> mAdapter.insertGroupItems(GROUP_DEFAULT, 0, items));
     }
 
     @Override
-    public void onPrePageDataLoadFail(Throwable e) {
+    public void onPrePageDataLoadFail(@NonNull Throwable e) {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
@@ -241,22 +201,14 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     }
 
     @Override
-    public void onNextPageDataLoad(Collection<UnionTypeItemObject> items) {
+    public void onNextPageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() -> mAdapter.appendGroupItems(GROUP_DEFAULT, items));
     }
 
     @Override
-    public void onNextPageDataLoadFail(Throwable e) {
+    public void onNextPageDataLoadFail(@NonNull Throwable e) {
         Host host = mAdapter.getHost();
-        if (host == null) {
-            Timber.e("host is null");
-            return;
-        }
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
                         GROUP_FOOTER_STATUS,
