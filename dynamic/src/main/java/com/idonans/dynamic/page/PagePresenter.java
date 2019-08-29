@@ -48,7 +48,25 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 }
             }
             if (!matchExcept) {
-                target.clear();
+                if (target != null) {
+                    target.clear();
+                }
+            }
+        }
+    }
+
+    /**
+     * 清除指定请求
+     *
+     * @param targets
+     */
+    @UiThread
+    private void clearRequest(DisposableHolder... targets) {
+        if (targets != null) {
+            for (DisposableHolder target : targets) {
+                if (target != null) {
+                    target.clear();
+                }
             }
         }
     }
