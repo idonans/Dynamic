@@ -82,14 +82,16 @@ public abstract class StatusPagePresenter<E, T extends PageView<E>> extends Page
         }
 
         if (mPrePageRequestStatus == null) {
+            Timber.v("mPrePageRequestStatus is null");
             return;
         }
 
         if (!view.hasPageContent()) {
+            Timber.v("has no page content");
             return;
         }
 
-        if (force || mPrePageRequestStatus.allowRequest()) {
+        if (force || (mPrePageRequestStatus.allowRequest() && !mInitRequestStatus.mLoading)) {
             mPrePageRequestStatus.setLoading();
             mInitRequestStatus.reset();
             super.requestPrePage();
@@ -131,14 +133,16 @@ public abstract class StatusPagePresenter<E, T extends PageView<E>> extends Page
         }
 
         if (mNextPageRequestStatus == null) {
+            Timber.v("mNextPageRequestStatus is null");
             return;
         }
 
         if (!view.hasPageContent()) {
+            Timber.v("has no page content");
             return;
         }
 
-        if (force || mNextPageRequestStatus.allowRequest()) {
+        if (force || (mNextPageRequestStatus.allowRequest() && !mInitRequestStatus.mLoading)) {
             mNextPageRequestStatus.setLoading();
             mInitRequestStatus.reset();
             super.requestNextPage();
