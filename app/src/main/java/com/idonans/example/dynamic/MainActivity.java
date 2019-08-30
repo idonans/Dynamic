@@ -52,10 +52,24 @@ public class MainActivity extends AppCompatActivity {
 
         mView = new UnionTypeStatusPageView(adapter) {
             @Override
+            public void showInitLoading() {
+                Host host = getAdapter().getHost();
+                host.getRecyclerView().postOnAnimation(() -> {
+                    getAdapter().clearGroupItems(GROUP_DEFAULT);
+                    if (mPullLayout != null) {
+                        mPullLayout.setRefreshing(false, false);
+                        mPullLayout.setEnabled(false);
+                    }
+                });
+                super.showInitLoading();
+            }
+
+            @Override
             public void hideInitLoading() {
                 super.hideInitLoading();
                 if (mPullLayout != null) {
                     mPullLayout.setRefreshing(false, false);
+                    mPullLayout.setEnabled(true);
                 }
             }
         };
