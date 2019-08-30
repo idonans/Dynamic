@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.idonans.dynamic.page.PageView;
 import com.idonans.dynamic.page.StatusPagePresenter;
 import com.idonans.dynamic.page.UnionTypeStatusPageView;
+import com.idonans.dynamic.pulllayout.PullLayout;
 import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 import com.idonans.lang.thread.Threads;
 import com.idonans.uniontype.Host;
@@ -25,9 +26,11 @@ import java.util.List;
 
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
+    private PullLayout mPullLayout;
     private RecyclerView mRecyclerView;
     private UnionTypeStatusPageView mView;
     private Presenter mPresenter;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mPullLayout = findViewById(R.id.pull_layout);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
@@ -46,11 +50,26 @@ public class MainActivity extends AppCompatActivity {
         adapter.setUnionTypeMapper(new UnionType());
         mRecyclerView.setAdapter(adapter);
 
-        mView = new UnionTypeStatusPageView(adapter);
+        mView = new UnionTypeStatusPageView(adapter) {
+            @Override
+            public void hideInitLoading() {
+                super.hideInitLoading();
+                if (mPullLayout != null) {
+                    mPullLayout.setRefreshing(false, false);
+                }
+            }
+        };
         mView.setAlwaysHidePrePageNoMoreData(true);
         mPresenter = new Presenter(mView);
         mView.setPresenter(mPresenter);
         mPresenter.requestInit();
+        mPullLayout.setOnRefreshListener(pullLayout -> {
+            Timber.v("pull layout on refresh");
+            if (mPresenter != null) {
+                Timber.v("pull layout on refresh request init");
+                mPresenter.requestInit(true);
+            }
+        });
     }
 
     private static class Presenter extends StatusPagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
@@ -59,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         private int mNextPageNo;
 
         public Presenter(UnionTypeStatusPageView view) {
-            super(view, true, true);
+            super(view, false, true);
         }
 
         @Nullable
