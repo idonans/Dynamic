@@ -21,10 +21,10 @@ import timber.log.Timber;
 
 public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPresenter<T> {
 
-    private final DisposableHolder mInitRequestHolder = new DisposableHolder();
-    private final DisposableHolder mPrePageRequestHolder = new DisposableHolder();
-    private final DisposableHolder mNextPageRequestHolder = new DisposableHolder();
-    private final DisposableHolder[] mRequestHolders = {mInitRequestHolder, mPrePageRequestHolder, mNextPageRequestHolder};
+    protected final DisposableHolder mInitRequestHolder = new DisposableHolder();
+    protected final DisposableHolder mPrePageRequestHolder = new DisposableHolder();
+    protected final DisposableHolder mNextPageRequestHolder = new DisposableHolder();
+    protected final DisposableHolder[] mRequestHolders = {mInitRequestHolder, mPrePageRequestHolder, mNextPageRequestHolder};
 
     public PagePresenter(T view) {
         super(view);
@@ -36,7 +36,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      * @param excepts
      */
     @UiThread
-    private void clearRequestExcept(DisposableHolder... excepts) {
+    protected void clearRequestExcept(DisposableHolder... excepts) {
         for (DisposableHolder target : mRequestHolders) {
             boolean matchExcept = false;
             if (excepts != null) {
@@ -61,7 +61,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      * @param targets
      */
     @UiThread
-    private void clearRequest(DisposableHolder... targets) {
+    protected void clearRequest(DisposableHolder... targets) {
         if (targets != null) {
             for (DisposableHolder target : targets) {
                 if (target != null) {
