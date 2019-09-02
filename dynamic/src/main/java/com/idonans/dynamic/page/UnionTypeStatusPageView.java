@@ -150,6 +150,26 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void onInitDataLoadFail(@NonNull Throwable e) {
+        Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestInit(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return e;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() -> {
             boolean hasPageContent = hasPageContent();
@@ -159,14 +179,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE,
-                                        (LoadingStatusCallbackHost) () ->
-                                                (LoadingStatusCallback) () -> {
-                                                    if (mPresenter == null) {
-                                                        Timber.e("presenter is null");
-                                                        return;
-                                                    }
-                                                    mPresenter.requestInit(true);
-                                                }
+                                        itemObject
                                 )
                         )
                 );
@@ -176,14 +189,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL,
-                                        (LoadingStatusCallbackHost) () ->
-                                                (LoadingStatusCallback) () -> {
-                                                    if (mPresenter == null) {
-                                                        Timber.e("presenter is null");
-                                                        return;
-                                                    }
-                                                    mPresenter.requestInit(true);
-                                                }
+                                        itemObject
                                 )
                         )
                 );
@@ -200,7 +206,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
-                ));
+                )
+        );
     }
 
     @Override
@@ -219,20 +226,39 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void onPrePageDataEmpty() {
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() -> {
-                    if (mAlwaysHidePrePageNoMoreData) {
-                        mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
-                    } else {
-                        mAdapter.setGroupItems(
-                                GROUP_HEADER_STATUS,
-                                Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
-                        );
-                    }
-                }
-        );
+            if (mAlwaysHidePrePageNoMoreData) {
+                mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
+            } else {
+                mAdapter.setGroupItems(
+                        GROUP_HEADER_STATUS,
+                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                );
+            }
+        });
     }
 
     @Override
     public void onPrePageDataLoadFail(@NonNull Throwable e) {
+        Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestPrePage(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return e;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
@@ -240,14 +266,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL,
-                                        (LoadingStatusCallbackHost) () ->
-                                                (LoadingStatusCallback) () -> {
-                                                    if (mPresenter == null) {
-                                                        Timber.e("presenter is null");
-                                                        return;
-                                                    }
-                                                    mPresenter.requestPrePage(true);
-                                                })
+                                        itemObject
+                                )
                         )
                 )
         );
@@ -255,6 +275,26 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void onPrePageManualToLoadMore() {
+        Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestPrePage(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return null;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
@@ -262,14 +302,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_MANUAL_TO_LOAD_MORE,
-                                        (LoadingStatusCallbackHost) () ->
-                                                (LoadingStatusCallback) () -> {
-                                                    if (mPresenter == null) {
-                                                        Timber.e("presenter is null");
-                                                        return;
-                                                    }
-                                                    mPresenter.requestPrePage(true);
-                                                })
+                                        itemObject
+                                )
                         )
                 )
         );
@@ -284,7 +318,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
-                ));
+                )
+        );
     }
 
     @Override
@@ -303,20 +338,39 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void onNextPageDataEmpty() {
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() -> {
-                    if (mAlwaysHideNextPageNoMoreData) {
-                        mAdapter.clearGroupItems(GROUP_FOOTER_STATUS);
-                    } else {
-                        mAdapter.setGroupItems(
-                                GROUP_FOOTER_STATUS,
-                                Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
-                        );
-                    }
-                }
-        );
+            if (mAlwaysHideNextPageNoMoreData) {
+                mAdapter.clearGroupItems(GROUP_FOOTER_STATUS);
+            } else {
+                mAdapter.setGroupItems(
+                        GROUP_FOOTER_STATUS,
+                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                );
+            }
+        });
     }
 
     @Override
     public void onNextPageDataLoadFail(@NonNull Throwable e) {
+        Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestNextPage(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return e;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
@@ -324,21 +378,35 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL,
-                                        (LoadingStatusCallbackHost) () ->
-                                                (LoadingStatusCallback) () -> {
-                                                    if (mPresenter == null) {
-                                                        Timber.e("presenter is null");
-                                                        return;
-                                                    }
-                                                    mPresenter.requestNextPage(true);
-                                                }
+                                        itemObject
                                 )
                         )
-                ));
+                )
+        );
     }
 
     @Override
     public void onNextPageManualToLoadMore() {
+        Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestNextPage(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return null;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() ->
                 mAdapter.setGroupItems(
@@ -346,17 +414,11 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                         Lists.newArrayList(
                                 UnionTypeItemObject.valueOf(
                                         UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_MANUAL_TO_LOAD_MORE,
-                                        (LoadingStatusCallbackHost) () ->
-                                                (LoadingStatusCallback) () -> {
-                                                    if (mPresenter == null) {
-                                                        Timber.e("presenter is null");
-                                                        return;
-                                                    }
-                                                    mPresenter.requestNextPage(true);
-                                                }
+                                        itemObject
                                 )
                         )
-                ));
+                )
+        );
     }
 
 }
