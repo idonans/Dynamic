@@ -19,6 +19,9 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
+/**
+ * 分页数据请求由 请求初始数据+请求上一页数据+请求下一页数据 组成。
+ */
 public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPresenter<T> {
 
     protected final DisposableHolder mInitRequestHolder = new DisposableHolder();
@@ -72,11 +75,11 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     }
 
     /**
-     * 请求初始数据
+     * 请求初始数据。
+     * <br/>当发起请求初始数据时，会中断旧的初始数据请求，上一页数据请求和下一页数据请求。
      */
     @UiThread
     public void requestInit() {
-        // 请求初始数据时，中断所有的旧请求
         clearRequestExcept();
 
         PageView<E> view = getView();
@@ -113,11 +116,12 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     }
 
     /**
-     * 请求上一页数据
+     * 请求上一页数据。
+     * <br/>当发起请求上一页始数据时，会中断旧的初始数据请求和上一页数据请求，但是会保留下一页数据请求。
+     * <br/>上一页数据请求和下一页数据请求可以同时进行。
      */
     @UiThread
     public void requestPrePage() {
-        // 请求上一页数据时，可以与下一页请求同时存在
         clearRequestExcept(mNextPageRequestHolder);
 
         PageView<E> view = getView();
@@ -153,11 +157,12 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     }
 
     /**
-     * 请求下一页数据
+     * 请求下一页数据。
+     * <br/>当发起请求下一页始数据时，会中断旧的初始数据请求和下一页数据请求，但是会保留上一页数据请求。
+     * <br/>下一页数据请求和上一页数据请求可以同时进行。
      */
     @UiThread
     public void requestNextPage() {
-        // 请求下一页数据时，可以与上一页请求同时存在
         clearRequestExcept(mPrePageRequestHolder);
 
         PageView<E> view = getView();
