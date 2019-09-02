@@ -29,8 +29,19 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     protected final DisposableHolder mNextPageRequestHolder = new DisposableHolder();
     protected final DisposableHolder[] mRequestHolders = {mInitRequestHolder, mPrePageRequestHolder, mNextPageRequestHolder};
 
-    public PagePresenter(T view) {
+    @NonNull
+    private final RequestStatus mInitRequestStatus;
+    @Nullable
+    private final RequestStatus mPrePageRequestStatus;
+    @Nullable
+    private final RequestStatus mNextPageRequestStatus;
+
+    public PagePresenter(T view, boolean supportPrePageRequest, boolean supportNextPageRequest) {
         super(view);
+
+        mInitRequestStatus = new RequestStatus();
+        mPrePageRequestStatus = supportPrePageRequest ? new RequestStatus() : null;
+        mNextPageRequestStatus = supportNextPageRequest ? new RequestStatus() : null;
     }
 
     /**
@@ -74,21 +85,58 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         }
     }
 
+    @UiThread
+    public void requestInit() {
+        requestInit(false);
+    }
+
     /**
      * 请求初始数据。
      * <br/>当发起请求初始数据时，会中断旧的初始数据请求，上一页数据请求和下一页数据请求。
      */
     @UiThread
-    public void requestInit() {
-        clearRequestExcept();
+    public void requestInit(boolean force) {
+        Timber.v("requestInit force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
             Timber.e("view is null");
             return;
         }
-        view.hidePrePageLoading();
-        view.hideNextPageLoading();
+
+        if (!force && !mInitRequestStatus.allowRequest()) {
+            return;
+        }
+
+        clearRequestExcept();
+
+        final boolean clearPageContent = view.isClearPageContentWhenRequestInit();
+
+        if (clearPageContent) {
+            if (mPrePageRequestStatus != null) {
+                mPrePageRequestStatus.reset();
+                view.hidePrePageLoading();
+            }
+            if (mNextPageRequestStatus != null) {
+                mNextPageRequestStatus.reset();
+                view.hideNextPageLoading();
+            }
+        } else {
+            if (mPrePageRequestStatus != null) {
+                if (mPrePageRequestStatus.mLoading || mPrePageRequestStatus.allowRequest()) {
+                    mPrePageRequestStatus.setManualToLoad();
+                    view.onPrePageManualToLoadMore();
+                }
+            }
+            if (mNextPageRequestStatus != null) {
+                if (mNextPageRequestStatus.mLoading || mNextPageRequestStatus.allowRequest()) {
+                    mNextPageRequestStatus.setManualToLoad();
+                    view.onNextPageManualToLoadMore();
+                }
+            }
+        }
+
+        mInitRequestStatus.setLoading();
         view.showInitLoading();
 
         mInitRequestHolder.set(Single.just(this)
@@ -102,7 +150,18 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                         Timber.e("view is null");
                         return;
                     }
+
+                    if (mPrePageRequestStatus != null) {
+                        mPrePageRequestStatus.reset();
+                    }
+
+                    if (mNextPageRequestStatus != null) {
+                        mNextPageRequestStatus.reset();
+                    }
+
+                    mInitRequestStatus.setEnd(items.isEmpty());
                     innerView.hideInitLoading();
+
                     onInitRequestResult(innerView, items);
                 }, e -> {
                     PageView<E> innerView = getView();
@@ -110,9 +169,25 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                         Timber.e("view is null");
                         return;
                     }
+
+                    if (mPrePageRequestStatus != null) {
+                        mPrePageRequestStatus.reset();
+                    }
+
+                    if (mNextPageRequestStatus != null) {
+                        mNextPageRequestStatus.reset();
+                    }
+
+                    mInitRequestStatus.setError();
                     innerView.hideInitLoading();
+
                     onInitRequestError(innerView, e);
                 }));
+    }
+
+    @UiThread
+    public void requestPrePage() {
+        requestPrePage(false);
     }
 
     /**
@@ -121,14 +196,33 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      * <br/>上一页数据请求和下一页数据请求可以同时进行。
      */
     @UiThread
-    public void requestPrePage() {
-        clearRequestExcept(mNextPageRequestHolder);
+    public void requestPrePage(boolean force) {
+        Timber.v("requestPrePage force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
             Timber.e("view is null");
             return;
         }
+
+        if (mPrePageRequestStatus == null) {
+            Timber.v("mPrePageRequestStatus is null");
+            return;
+        }
+
+        if (!view.hasPageContent()) {
+            Timber.v("has no page content");
+            return;
+        }
+
+        if (!force && !mPrePageRequestStatus.allowRequest()) {
+            return;
+        }
+
+        clearRequestExcept(mNextPageRequestHolder);
+
+        mPrePageRequestStatus.setLoading();
+        mInitRequestStatus.reset();
         view.hideInitLoading();
         view.showPrePageLoading();
 
@@ -143,7 +237,10 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                         Timber.e("view is null");
                         return;
                     }
+
+                    mPrePageRequestStatus.setEnd(items.isEmpty());
                     innerView.hidePrePageLoading();
+
                     onPrePageRequestResult(innerView, items);
                 }, e -> {
                     PageView<E> innerView = getView();
@@ -151,9 +248,17 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                         Timber.e("view is null");
                         return;
                     }
+
+                    mPrePageRequestStatus.setError();
                     innerView.hidePrePageLoading();
+
                     onPrePageRequestError(innerView, e);
                 }));
+    }
+
+    @UiThread
+    public void requestNextPage() {
+        requestNextPage(false);
     }
 
     /**
@@ -162,14 +267,33 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      * <br/>下一页数据请求和上一页数据请求可以同时进行。
      */
     @UiThread
-    public void requestNextPage() {
-        clearRequestExcept(mPrePageRequestHolder);
+    public void requestNextPage(boolean force) {
+        Timber.v("requestNextPage force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
             Timber.e("view is null");
             return;
         }
+
+        if (mNextPageRequestStatus == null) {
+            Timber.v("mNextPageRequestStatus is null");
+            return;
+        }
+
+        if (!view.hasPageContent()) {
+            Timber.v("has no page content");
+            return;
+        }
+
+        if (!force && !mNextPageRequestStatus.allowRequest()) {
+            return;
+        }
+
+        clearRequestExcept(mPrePageRequestHolder);
+
+        mNextPageRequestStatus.setLoading();
+        mInitRequestStatus.reset();
         view.hideInitLoading();
         view.showNextPageLoading();
 
@@ -184,7 +308,10 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                         Timber.e("view is null");
                         return;
                     }
+
+                    mNextPageRequestStatus.setEnd(items.isEmpty());
                     innerView.hideNextPageLoading();
+
                     onNextPageRequestResult(innerView, items);
                 }, e -> {
                     PageView<E> innerView = getView();
@@ -192,7 +319,10 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                         Timber.e("view is null");
                         return;
                     }
+
+                    mNextPageRequestStatus.setError();
                     innerView.hideNextPageLoading();
+
                     onNextPageRequestError(innerView, e);
                 }));
     }
@@ -204,6 +334,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onInitRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
+        Timber.v("onInitRequestResult %s items", items.size());
         view.onInitDataLoad(items);
         if (items.isEmpty()) {
             view.onInitDataEmpty();
@@ -213,6 +344,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onInitRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
+        Timber.e(e, "onInitRequestError");
         view.onInitDataLoadFail(e);
     }
 
@@ -223,6 +355,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onPrePageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
+        Timber.v("onPrePageRequestResult %s items", items.size());
         view.onPrePageDataLoad(items);
         if (items.isEmpty()) {
             view.onPrePageDataEmpty();
@@ -232,6 +365,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onPrePageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
+        Timber.e(e, "onPrePageRequestError");
         view.onPrePageDataLoadFail(e);
     }
 
@@ -242,6 +376,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onNextPageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
+        Timber.v("onNextPageRequestResult %s items", items.size());
         view.onNextPageDataLoad(items);
         if (items.isEmpty()) {
             view.onNextPageDataEmpty();
@@ -251,7 +386,54 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onNextPageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
+        Timber.e(e, "onNextPageRequestError");
         view.onNextPageDataLoadFail(e);
+    }
+
+    private static class RequestStatus {
+        private boolean mLoading;
+        private boolean mError;
+        private boolean mEnd;
+        private boolean mManualToLoad; // 手动触发模式，如点击加载
+
+        void reset() {
+            this.mLoading = false;
+            this.mError = false;
+            this.mEnd = false;
+            this.mManualToLoad = false;
+        }
+
+        boolean allowRequest() {
+            return !this.mLoading && !this.mError && !this.mEnd && !this.mManualToLoad;
+        }
+
+        void setLoading() {
+            mLoading = true;
+            mError = false;
+            mEnd = false;
+            mManualToLoad = false;
+        }
+
+        void setError() {
+            mLoading = false;
+            mError = true;
+            mEnd = false;
+            mManualToLoad = false;
+        }
+
+        void setEnd(boolean end) {
+            mLoading = false;
+            mError = false;
+            mEnd = end;
+            mManualToLoad = false;
+        }
+
+        public void setManualToLoad() {
+            mLoading = false;
+            mError = false;
+            mEnd = false;
+            mManualToLoad = true;
+        }
     }
 
 }

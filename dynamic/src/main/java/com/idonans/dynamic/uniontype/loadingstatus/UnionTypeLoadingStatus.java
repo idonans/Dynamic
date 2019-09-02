@@ -5,6 +5,7 @@ import com.idonans.dynamic.uniontype.loadingstatus.impl.UnionTypeLoadingStatusLo
 import com.idonans.dynamic.uniontype.loadingstatus.impl.UnionTypeLoadingStatusLoadFailSmallViewHolder;
 import com.idonans.dynamic.uniontype.loadingstatus.impl.UnionTypeLoadingStatusLoadingLargeViewHolder;
 import com.idonans.dynamic.uniontype.loadingstatus.impl.UnionTypeLoadingStatusLoadingSmallViewHolder;
+import com.idonans.dynamic.uniontype.loadingstatus.impl.UnionTypeLoadingStatusManualToLoadMoreViewHolder;
 import com.idonans.dynamic.uniontype.loadingstatus.impl.UnionTypeLoadingStatusNoMoreDataViewHolder;
 import com.idonans.uniontype.SimpleUnionTypeMapper;
 
@@ -16,6 +17,7 @@ public class UnionTypeLoadingStatus extends SimpleUnionTypeMapper {
     public static final int UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL = -1003;
     public static final int UNION_TYPE_LOADING_STATUS_NO_MORE_DATA = -1004;
     public static final int UNION_TYPE_LOADING_STATUS_EMPTY_DATA = -1005;
+    public static final int UNION_TYPE_LOADING_STATUS_MANUAL_TO_LOAD_MORE = -1006;
 
     public UnionTypeLoadingStatus() {
         put(UNION_TYPE_LOADING_STATUS_LOADING_LARGE, UnionTypeLoadingStatusLoadingLargeViewHolder::new);
@@ -24,6 +26,7 @@ public class UnionTypeLoadingStatus extends SimpleUnionTypeMapper {
         put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, UnionTypeLoadingStatusLoadFailSmallViewHolder::new);
         put(UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, UnionTypeLoadingStatusNoMoreDataViewHolder::new);
         put(UNION_TYPE_LOADING_STATUS_EMPTY_DATA, UnionTypeLoadingStatusEmptyDataViewHolder::new);
+        put(UNION_TYPE_LOADING_STATUS_MANUAL_TO_LOAD_MORE, UnionTypeLoadingStatusManualToLoadMoreViewHolder::new);
     }
 
 }

@@ -8,6 +8,8 @@ import java.util.Collection;
 
 public interface PageView<E> extends DynamicView {
 
+    boolean isClearPageContentWhenRequestInit();
+
     boolean hasPageContent();
 
     void showInitLoading();
@@ -34,10 +36,14 @@ public interface PageView<E> extends DynamicView {
 
     void onPrePageDataLoadFail(@NonNull Throwable e);
 
+    void onPrePageManualToLoadMore();
+
     void onNextPageDataLoad(@NonNull Collection<E> items);
 
     void onNextPageDataEmpty();
 
     void onNextPageDataLoadFail(@NonNull Throwable e);
+
+    void onNextPageManualToLoadMore();
 
 }

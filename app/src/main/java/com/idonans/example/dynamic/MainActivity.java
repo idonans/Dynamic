@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.idonans.dynamic.page.PagePresenter;
 import com.idonans.dynamic.page.PageView;
-import com.idonans.dynamic.page.StatusPagePresenter;
 import com.idonans.dynamic.page.UnionTypeStatusPageView;
 import com.idonans.dynamic.pulllayout.PullLayout;
 import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
@@ -50,18 +50,22 @@ public class MainActivity extends AppCompatActivity {
         adapter.setUnionTypeMapper(new UnionType());
         mRecyclerView.setAdapter(adapter);
 
-        mView = new UnionTypeStatusPageView(adapter) {
+        mView = new UnionTypeStatusPageView(adapter, false) {
             @Override
             public void showInitLoading() {
-                Host host = getAdapter().getHost();
-                host.getRecyclerView().postOnAnimation(() -> {
-                    getAdapter().clearGroupItems(GROUP_DEFAULT);
+                if (!hasPageContent()) {
+                    super.showInitLoading();
                     if (mPullLayout != null) {
                         mPullLayout.setRefreshing(false, false);
                         mPullLayout.setEnabled(false);
                     }
-                });
-                super.showInitLoading();
+                } else {
+                    super.hideInitLoading();
+                    if (mPullLayout != null) {
+                        mPullLayout.setRefreshing(true, false);
+                        mPullLayout.setEnabled(true);
+                    }
+                }
             }
 
             @Override
@@ -86,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private static class Presenter extends StatusPagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
+    private static class Presenter extends PagePresenter<UnionTypeItemObject, UnionTypeStatusPageView> {
 
         private int mPrePageNo;
         private int mNextPageNo;
