@@ -111,6 +111,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         clearRequestExcept();
 
         final boolean clearPageContent = view.isClearPageContentWhenRequestInit();
+        final boolean hasPageContent = view.hasPageContent();
 
         if (clearPageContent) {
             if (mPrePageRequestStatus != null) {
@@ -123,15 +124,17 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
             }
         } else {
             if (mPrePageRequestStatus != null) {
-                if (mPrePageRequestStatus.mLoading || mPrePageRequestStatus.allowRequest()) {
+                if (mPrePageRequestStatus.mLoading
+                        || (hasPageContent && mPrePageRequestStatus.allowRequest())) {
                     mPrePageRequestStatus.setManualToLoad();
-                    view.onPrePageManualToLoadMore();
+                    view.showPrePageManualToLoadMore();
                 }
             }
             if (mNextPageRequestStatus != null) {
-                if (mNextPageRequestStatus.mLoading || mNextPageRequestStatus.allowRequest()) {
+                if (mNextPageRequestStatus.mLoading
+                        || (hasPageContent && mNextPageRequestStatus.allowRequest())) {
                     mNextPageRequestStatus.setManualToLoad();
-                    view.onNextPageManualToLoadMore();
+                    view.showNextPageManualToLoadMore();
                 }
             }
         }

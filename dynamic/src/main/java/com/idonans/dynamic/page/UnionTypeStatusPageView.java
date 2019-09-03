@@ -274,7 +274,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     }
 
     @Override
-    public void onPrePageManualToLoadMore() {
+    public void showPrePageManualToLoadMore() {
         Object itemObject = new LoadingStatusCallbackHost() {
             @Nullable
             @Override
@@ -386,7 +386,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     }
 
     @Override
-    public void onNextPageManualToLoadMore() {
+    public void showNextPageManualToLoadMore() {
         Object itemObject = new LoadingStatusCallbackHost() {
             @Nullable
             @Override

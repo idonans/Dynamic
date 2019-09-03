@@ -18,9 +18,13 @@ public interface PageView<E> extends DynamicView {
 
     void showPrePageLoading();
 
+    void showPrePageManualToLoadMore();
+
     void hidePrePageLoading();
 
     void showNextPageLoading();
+
+    void showNextPageManualToLoadMore();
 
     void hideNextPageLoading();
 
@@ -36,14 +40,10 @@ public interface PageView<E> extends DynamicView {
 
     void onPrePageDataLoadFail(@NonNull Throwable e);
 
-    void onPrePageManualToLoadMore();
-
     void onNextPageDataLoad(@NonNull Collection<E> items);
 
     void onNextPageDataEmpty();
 
     void onNextPageDataLoadFail(@NonNull Throwable e);
-
-    void onNextPageManualToLoadMore();
 
 }
