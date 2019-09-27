@@ -213,7 +213,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
             return;
         }
 
-        if (!view.hasPageContent()) {
+        if (!force && !view.hasPageContent()) {
             Timber.v("has no page content");
             return;
         }
@@ -284,7 +284,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
             return;
         }
 
-        if (!view.hasPageContent()) {
+        if (!force && !view.hasPageContent()) {
             Timber.v("has no page content");
             return;
         }

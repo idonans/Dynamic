@@ -138,19 +138,39 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void onInitDataEmpty() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestInit(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return null;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() -> {
             onClearPageContent();
             mAdapter.setGroupItems(
                     GROUP_INIT_STATUS,
-                    Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_EMPTY_DATA, new Object()))
+                    Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_EMPTY_DATA, itemObject))
             );
         });
     }
 
     @Override
     public void onInitDataLoadFail(@NonNull Throwable e) {
-        Object itemObject = new LoadingStatusCallbackHost() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
             @Nullable
             @Override
             public LoadingStatusCallback getLoadingStatusCallback() {
@@ -224,6 +244,26 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void onPrePageDataEmpty() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestPrePage(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return null;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() -> {
             if (mAlwaysHidePrePageNoMoreData) {
@@ -231,7 +271,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             } else {
                 mAdapter.setGroupItems(
                         GROUP_HEADER_STATUS,
-                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, itemObject))
                 );
             }
         });
@@ -239,7 +279,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void onPrePageDataLoadFail(@NonNull Throwable e) {
-        Object itemObject = new LoadingStatusCallbackHost() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
             @Nullable
             @Override
             public LoadingStatusCallback getLoadingStatusCallback() {
@@ -275,7 +315,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void showPrePageManualToLoadMore() {
-        Object itemObject = new LoadingStatusCallbackHost() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
             @Nullable
             @Override
             public LoadingStatusCallback getLoadingStatusCallback() {
@@ -336,6 +376,26 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void onNextPageDataEmpty() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
+            @Nullable
+            @Override
+            public LoadingStatusCallback getLoadingStatusCallback() {
+                return () -> {
+                    if (mPresenter == null) {
+                        Timber.e("presenter is null");
+                        return;
+                    }
+                    mPresenter.requestNextPage(true);
+                };
+            }
+
+            @Nullable
+            @Override
+            public Throwable getCause() {
+                return null;
+            }
+        };
+
         Host host = mAdapter.getHost();
         host.getRecyclerView().postOnAnimation(() -> {
             if (mAlwaysHideNextPageNoMoreData) {
@@ -343,7 +403,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             } else {
                 mAdapter.setGroupItems(
                         GROUP_FOOTER_STATUS,
-                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, new Object()))
+                        Lists.newArrayList(UnionTypeItemObject.valueOf(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, itemObject))
                 );
             }
         });
@@ -351,7 +411,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void onNextPageDataLoadFail(@NonNull Throwable e) {
-        Object itemObject = new LoadingStatusCallbackHost() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
             @Nullable
             @Override
             public LoadingStatusCallback getLoadingStatusCallback() {
@@ -387,7 +447,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
 
     @Override
     public void showNextPageManualToLoadMore() {
-        Object itemObject = new LoadingStatusCallbackHost() {
+        final Object itemObject = new LoadingStatusCallbackHost() {
             @Nullable
             @Override
             public LoadingStatusCallback getLoadingStatusCallback() {
