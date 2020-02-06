@@ -5,8 +5,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.idonans.dynamic.R;
-import com.idonans.dynamic.uniontype.loadingstatus.LoadingStatusCallback;
-import com.idonans.dynamic.uniontype.loadingstatus.LoadingStatusCallbackHost;
+import com.idonans.dynamic.LoadingStatusCallback;
+import com.idonans.dynamic.LoadingStatusCallbackHost;
 import com.idonans.lang.util.ViewUtil;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeViewHolder;

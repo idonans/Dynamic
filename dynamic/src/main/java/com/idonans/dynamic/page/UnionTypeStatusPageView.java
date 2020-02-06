@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.idonans.dynamic.uniontype.loadingstatus.LoadingStatusCallback;
-import com.idonans.dynamic.uniontype.loadingstatus.LoadingStatusCallbackHost;
+import com.idonans.dynamic.LoadingStatusCallback;
+import com.idonans.dynamic.LoadingStatusCallbackHost;
 import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
 import com.idonans.uniontype.Host;
 import com.idonans.uniontype.UnionTypeAdapter;

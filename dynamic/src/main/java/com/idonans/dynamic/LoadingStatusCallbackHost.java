@@ -1,4 +1,4 @@
-package com.idonans.dynamic.uniontype.loadingstatus;
+package com.idonans.dynamic;
 
 import androidx.annotation.Nullable;
 

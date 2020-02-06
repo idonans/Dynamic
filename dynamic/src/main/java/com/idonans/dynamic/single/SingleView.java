@@ -8,6 +8,10 @@ import java.util.Collection;
 
 public interface SingleView<E> extends DynamicView {
 
+    boolean isClearContentWhenRequestInit();
+
+    boolean hasContent();
+
     void showInitLoading();
 
     void hideInitLoading();

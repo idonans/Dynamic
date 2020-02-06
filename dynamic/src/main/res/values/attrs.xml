@@ -9,4 +9,7 @@
         <attr name="pull_overlay" format="boolean" />
         <attr name="pull_threshold" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="SingleLoadingStatusView">
+        <attr name="custom_layout" format="reference" />
+    </declare-styleable>
 </resources>
