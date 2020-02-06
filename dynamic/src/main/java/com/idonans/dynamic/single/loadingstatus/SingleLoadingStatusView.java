@@ -200,6 +200,22 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
             ViewParent parent = view.getParent();
             if (parent instanceof ViewGroup) {
                 ((ViewGroup) parent).removeView(view);
+
+                if (view == mLoadingLargeView) {
+                    mSingleLoadingStatus.onLoadingLargeViewRemoved(view);
+                } else if (view == mLoadingSmallView) {
+                    mSingleLoadingStatus.onLoadingSmallViewRemoved(view);
+                } else if (view == mEmptyDataView) {
+                    mSingleLoadingStatus.onEmptyDataViewRemoved(view);
+                } else if (view == mLoadFailLargeView) {
+                    mSingleLoadingStatus.onLoadFailLargeViewRemoved(view);
+                } else if (view == mLoadFailSmallView) {
+                    mSingleLoadingStatus.onLoadFailSmallViewRemoved(view);
+                } else if (view == mDataView) {
+                    mSingleLoadingStatus.onDataViewRemoved(view);
+                }
+
+                mSingleLoadingStatus.onViewRemoved(view);
             }
         }
     }

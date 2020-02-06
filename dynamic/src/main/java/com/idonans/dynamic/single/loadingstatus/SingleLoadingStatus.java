@@ -19,6 +19,9 @@ public abstract class SingleLoadingStatus<T> {
         return view;
     }
 
+    public void onEmptyDataViewRemoved(View view) {
+    }
+
     protected View createEmptyDataView(ViewGroup parent, int layoutResId, Object object) {
         return LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
     }
@@ -27,6 +30,9 @@ public abstract class SingleLoadingStatus<T> {
         View view = createLoadFailLargeView(parent, R.layout.union_type_loading_status_load_fail_large_view, object);
         bindObject(view, object);
         return view;
+    }
+
+    public void onLoadFailLargeViewRemoved(View view) {
     }
 
     protected View createLoadFailLargeView(ViewGroup parent, int layoutResId, Object object) {
@@ -39,6 +45,9 @@ public abstract class SingleLoadingStatus<T> {
         return view;
     }
 
+    public void onLoadFailSmallViewRemoved(View view) {
+    }
+
     protected View createLoadFailSmallView(ViewGroup parent, int layoutResId, Object object) {
         return LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
     }
@@ -49,6 +58,9 @@ public abstract class SingleLoadingStatus<T> {
         return view;
     }
 
+    public void onLoadingSmallViewRemoved(View view) {
+    }
+
     protected View createLoadingSmallView(ViewGroup parent, int layoutResId, Object object) {
         return LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
     }
@@ -57,6 +69,9 @@ public abstract class SingleLoadingStatus<T> {
         View view = createLoadingLargeView(parent, R.layout.union_type_loading_status_loading_large_view, object);
         bindObject(view, object);
         return view;
+    }
+
+    public void onLoadingLargeViewRemoved(View view) {
     }
 
     protected View createLoadingLargeView(ViewGroup parent, int layoutResId, Object object) {
@@ -78,5 +93,11 @@ public abstract class SingleLoadingStatus<T> {
     }
 
     public abstract View createDataView(ViewGroup parent, @NonNull T data);
+
+    public void onDataViewRemoved(View view) {
+    }
+
+    public void onViewRemoved(View view) {
+    }
 
 }
