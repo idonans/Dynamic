@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import com.google.common.base.Preconditions;
 import com.idonans.dynamic.R;
 import com.idonans.dynamic.single.StatusSingleViewAdapter;
+import com.idonans.lang.thread.Threads;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -290,9 +291,11 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    if (listener != null) {
-                        listener.onAnimationEndOrNone(statusView, true);
-                    }
+                    Threads.postUi(() -> {
+                        if (listener != null) {
+                            listener.onAnimationEndOrNone(statusView, true);
+                        }
+                    });
                 }
 
                 @Override
@@ -320,9 +323,11 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    if (listener != null) {
-                        listener.onAnimationEndOrNone(statusView, true);
-                    }
+                    Threads.postUi(() -> {
+                        if (listener != null) {
+                            listener.onAnimationEndOrNone(statusView, true);
+                        }
+                    });
                 }
 
                 @Override
