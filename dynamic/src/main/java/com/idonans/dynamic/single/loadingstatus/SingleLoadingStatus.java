@@ -3,8 +3,10 @@ package com.idonans.dynamic.single.loadingstatus;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.idonans.dynamic.LoadingStatusCallback;
 import com.idonans.dynamic.LoadingStatusCallbackHost;
@@ -98,6 +100,21 @@ public abstract class SingleLoadingStatus<T> {
     }
 
     public void onViewRemoved(View view) {
+    }
+
+    public void setStatusViewAnimation(@NonNull View statusView, @Nullable Animation showAnimation, @Nullable Animation hideAnimation) {
+        statusView.setTag(R.id.dynamic_status_view_show_animation_object, showAnimation);
+        statusView.setTag(R.id.dynamic_status_view_hide_animation_object, hideAnimation);
+    }
+
+    @Nullable
+    public Animation getStatusViewShowAnimation(@NonNull View statusView) {
+        return (Animation) statusView.getTag(R.id.dynamic_status_view_show_animation_object);
+    }
+
+    @Nullable
+    public Animation getStatusViewHideAnimation(@NonNull View statusView) {
+        return (Animation) statusView.getTag(R.id.dynamic_status_view_hide_animation_object);
     }
 
 }

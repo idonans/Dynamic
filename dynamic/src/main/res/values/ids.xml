@@ -1,0 +1,4 @@
+<resources>
+    <item name="dynamic_status_view_show_animation_object" type="id" />
+    <item name="dynamic_status_view_hide_animation_object" type="id" />
+</resources>

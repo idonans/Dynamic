@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
@@ -86,6 +87,36 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
         };
     }
 
+    @Nullable
+    public View getLoadingLargeView() {
+        return mLoadingLargeView;
+    }
+
+    @Nullable
+    public View getLoadingSmallView() {
+        return mLoadingSmallView;
+    }
+
+    @Nullable
+    public View getLoadFailLargeView() {
+        return mLoadFailLargeView;
+    }
+
+    @Nullable
+    public View getLoadFailSmallView() {
+        return mLoadFailSmallView;
+    }
+
+    @Nullable
+    public View getEmptyDataView() {
+        return mEmptyDataView;
+    }
+
+    @Nullable
+    public View getDataView() {
+        return mDataView;
+    }
+
     public void setSingleLoadingStatus(@NonNull SingleLoadingStatus<T> singleLoadingStatus) {
         mSingleLoadingStatus = singleLoadingStatus;
     }
@@ -102,6 +133,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
         mLoadingLargeView = mSingleLoadingStatus.createLoadingLargeView(this, object);
         if (mLoadingLargeView != null) {
             addView(mLoadingLargeView);
+            startStatusViewShowAnimation(mLoadingLargeView, null);
         }
     }
 
@@ -112,6 +144,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
         mLoadingSmallView = mSingleLoadingStatus.createLoadingSmallView(this, object);
         if (mLoadingSmallView != null) {
             mSmallViewParent.addView(mLoadingSmallView);
+            startStatusViewShowAnimation(mLoadingSmallView, null);
         }
     }
 
@@ -135,6 +168,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
             mDataView = mSingleLoadingStatus.createDataView(this, object);
             if (mDataView != null) {
                 mContentViewParent.addView(mDataView);
+                startStatusViewShowAnimation(mDataView, null);
             }
         }
     }
@@ -144,7 +178,10 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
         clearView(true);
 
         mEmptyDataView = mSingleLoadingStatus.createEmptyDataView(this, object);
-        addView(mEmptyDataView);
+        if (mEmptyDataView != null) {
+            addView(mEmptyDataView);
+            startStatusViewShowAnimation(mEmptyDataView, null);
+        }
     }
 
     @Override
@@ -154,6 +191,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
         mLoadFailLargeView = mSingleLoadingStatus.createLoadFailLargeView(this, object);
         if (mLoadFailLargeView != null) {
             addView(mLoadFailLargeView);
+            startStatusViewShowAnimation(mLoadFailLargeView, null);
         }
     }
 
@@ -164,6 +202,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
         mLoadFailSmallView = mSingleLoadingStatus.createLoadFailSmallView(this, object);
         if (mLoadFailSmallView != null) {
             mSmallViewParent.addView(mLoadFailSmallView);
+            startStatusViewShowAnimation(mLoadFailSmallView, null);
         }
     }
 
@@ -195,27 +234,106 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
         }
     }
 
-    private void removeViewFromParent(View view) {
+    private void removeViewFromParent(@Nullable final View view) {
         if (view != null) {
-            ViewParent parent = view.getParent();
-            if (parent instanceof ViewGroup) {
-                ((ViewGroup) parent).removeView(view);
+            final boolean isLoadingLargeView = view == mLoadingLargeView;
+            final boolean isLoadingSmallView = view == mLoadingSmallView;
+            final boolean isEmptyDataView = view == mEmptyDataView;
+            final boolean isLoadFailLargeView = view == mLoadFailLargeView;
+            final boolean isLoadFailSmallView = view == mLoadFailSmallView;
+            final boolean isDataView = view == mDataView;
 
-                if (view == mLoadingLargeView) {
-                    mSingleLoadingStatus.onLoadingLargeViewRemoved(view);
-                } else if (view == mLoadingSmallView) {
-                    mSingleLoadingStatus.onLoadingSmallViewRemoved(view);
-                } else if (view == mEmptyDataView) {
-                    mSingleLoadingStatus.onEmptyDataViewRemoved(view);
-                } else if (view == mLoadFailLargeView) {
-                    mSingleLoadingStatus.onLoadFailLargeViewRemoved(view);
-                } else if (view == mLoadFailSmallView) {
-                    mSingleLoadingStatus.onLoadFailSmallViewRemoved(view);
-                } else if (view == mDataView) {
-                    mSingleLoadingStatus.onDataViewRemoved(view);
+            startStatusViewHideAnimation(view, (statusView, end) -> {
+                ViewParent parent = view.getParent();
+                if (parent instanceof ViewGroup) {
+                    ((ViewGroup) parent).removeView(view);
+
+                    if (isLoadingLargeView) {
+                        mSingleLoadingStatus.onLoadingLargeViewRemoved(view);
+                    } else if (isLoadingSmallView) {
+                        mSingleLoadingStatus.onLoadingSmallViewRemoved(view);
+                    } else if (isEmptyDataView) {
+                        mSingleLoadingStatus.onEmptyDataViewRemoved(view);
+                    } else if (isLoadFailLargeView) {
+                        mSingleLoadingStatus.onLoadFailLargeViewRemoved(view);
+                    } else if (isLoadFailSmallView) {
+                        mSingleLoadingStatus.onLoadFailSmallViewRemoved(view);
+                    } else if (isDataView) {
+                        mSingleLoadingStatus.onDataViewRemoved(view);
+                    }
+
+                    mSingleLoadingStatus.onViewRemoved(view);
+                }
+            });
+        }
+    }
+
+    /**
+     * 监听动画执行结束或者动画不存在
+     */
+    public interface OnAnimationEndOrNoneListener {
+        /**
+         * @param end true 表示动画执行结束，false 表示动画不存在
+         */
+        void onAnimationEndOrNone(@NonNull View statusView, boolean end);
+    }
+
+    protected void startStatusViewShowAnimation(@NonNull final View statusView, @Nullable final OnAnimationEndOrNoneListener listener) {
+        statusView.clearAnimation();
+        final Animation animation = mSingleLoadingStatus.getStatusViewShowAnimation(statusView);
+        if (animation != null) {
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // ignore
                 }
 
-                mSingleLoadingStatus.onViewRemoved(view);
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    if (listener != null) {
+                        listener.onAnimationEndOrNone(statusView, true);
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // ignore
+                }
+            });
+            statusView.startAnimation(animation);
+        } else {
+            if (listener != null) {
+                listener.onAnimationEndOrNone(statusView, false);
+            }
+        }
+    }
+
+    protected void startStatusViewHideAnimation(@NonNull final View statusView, @Nullable final OnAnimationEndOrNoneListener listener) {
+        statusView.clearAnimation();
+        final Animation animation = mSingleLoadingStatus.getStatusViewHideAnimation(statusView);
+        if (animation != null) {
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    // ignore
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    if (listener != null) {
+                        listener.onAnimationEndOrNone(statusView, true);
+                    }
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // ignore
+                }
+            });
+            statusView.startAnimation(animation);
+        } else {
+            if (listener != null) {
+                listener.onAnimationEndOrNone(statusView, false);
             }
         }
     }
