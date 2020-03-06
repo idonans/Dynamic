@@ -29,6 +29,9 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
     private int mLayoutResId = R.layout.dynamic_single_loading_status_view;
 
     @NonNull
+    private ViewGroup mDefaultViewParent;
+
+    @NonNull
     private ViewGroup mSmallViewParent;
     @NonNull
     private ViewGroup mContentViewParent;
@@ -74,6 +77,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
 
         LayoutInflater.from(context).inflate(mLayoutResId, this, true);
 
+        mDefaultViewParent = findViewById(R.id.default_view_parent);
         mSmallViewParent = findViewById(R.id.small_view_parent);
         mContentViewParent = findViewById(R.id.content_view_parent);
 
@@ -133,7 +137,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
 
         mLoadingLargeView = mSingleLoadingStatus.createLoadingLargeView(this, object);
         if (mLoadingLargeView != null) {
-            addView(mLoadingLargeView);
+            mDefaultViewParent.addView(mLoadingLargeView);
             startStatusViewShowAnimation(mLoadingLargeView, null);
         }
     }
@@ -180,7 +184,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
 
         mEmptyDataView = mSingleLoadingStatus.createEmptyDataView(this, object);
         if (mEmptyDataView != null) {
-            addView(mEmptyDataView);
+            mDefaultViewParent.addView(mEmptyDataView);
             startStatusViewShowAnimation(mEmptyDataView, null);
         }
     }
@@ -191,7 +195,7 @@ public class SingleLoadingStatusView<T> extends FrameLayout implements StatusSin
 
         mLoadFailLargeView = mSingleLoadingStatus.createLoadFailLargeView(this, object);
         if (mLoadFailLargeView != null) {
-            addView(mLoadFailLargeView);
+            mDefaultViewParent.addView(mLoadFailLargeView);
             startStatusViewShowAnimation(mLoadFailLargeView, null);
         }
     }
