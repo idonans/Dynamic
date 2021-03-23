@@ -7,6 +7,7 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.idonans.dynamic.DynamicPresenter;
+import com.idonans.dynamic.LibLog;
 import com.idonans.lang.DisposableHolder;
 
 import java.util.Collection;
@@ -17,7 +18,6 @@ import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import timber.log.Timber;
 
 /**
  * 分页数据请求由 请求初始数据+请求上一页数据+请求下一页数据 组成。
@@ -96,11 +96,11 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      */
     @UiThread
     public void requestInit(boolean force) {
-        Timber.v("requestInit force:%s", force);
+        LibLog.v("requestInit force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
-            Timber.e("view is null");
+            LibLog.e("view is null");
             return;
         }
 
@@ -150,7 +150,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 .subscribe(items -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -169,7 +169,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 }, e -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -200,21 +200,21 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      */
     @UiThread
     public void requestPrePage(boolean force) {
-        Timber.v("requestPrePage force:%s", force);
+        LibLog.v("requestPrePage force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
-            Timber.e("view is null");
+            LibLog.e("view is null");
             return;
         }
 
         if (mPrePageRequestStatus == null) {
-            Timber.v("mPrePageRequestStatus is null");
+            LibLog.v("mPrePageRequestStatus is null");
             return;
         }
 
         if (!force && !view.hasPageContent()) {
-            Timber.v("has no page content");
+            LibLog.v("has no page content");
             return;
         }
 
@@ -237,7 +237,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 .subscribe(items -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -248,7 +248,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 }, e -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -271,21 +271,21 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      */
     @UiThread
     public void requestNextPage(boolean force) {
-        Timber.v("requestNextPage force:%s", force);
+        LibLog.v("requestNextPage force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
-            Timber.e("view is null");
+            LibLog.e("view is null");
             return;
         }
 
         if (mNextPageRequestStatus == null) {
-            Timber.v("mNextPageRequestStatus is null");
+            LibLog.v("mNextPageRequestStatus is null");
             return;
         }
 
         if (!force && !view.hasPageContent()) {
-            Timber.v("has no page content");
+            LibLog.v("has no page content");
             return;
         }
 
@@ -308,7 +308,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 .subscribe(items -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -319,7 +319,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 }, e -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -337,7 +337,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onInitRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        Timber.v("onInitRequestResult %s items", items.size());
+        LibLog.v("onInitRequestResult %s items", items.size());
         view.onInitDataLoad(items);
         if (items.isEmpty()) {
             view.onInitDataEmpty();
@@ -347,7 +347,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onInitRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        Timber.e(e, "onInitRequestError");
+        LibLog.e(e, "onInitRequestError");
         view.onInitDataLoadFail(e);
     }
 
@@ -358,7 +358,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onPrePageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        Timber.v("onPrePageRequestResult %s items", items.size());
+        LibLog.v("onPrePageRequestResult %s items", items.size());
         view.onPrePageDataLoad(items);
         if (items.isEmpty()) {
             view.onPrePageDataEmpty();
@@ -368,7 +368,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onPrePageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        Timber.e(e, "onPrePageRequestError");
+        LibLog.e(e, "onPrePageRequestError");
         view.onPrePageDataLoadFail(e);
     }
 
@@ -379,7 +379,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onNextPageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        Timber.v("onNextPageRequestResult %s items", items.size());
+        LibLog.v("onNextPageRequestResult %s items", items.size());
         view.onNextPageDataLoad(items);
         if (items.isEmpty()) {
             view.onNextPageDataEmpty();
@@ -389,7 +389,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onNextPageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        Timber.e(e, "onNextPageRequestError");
+        LibLog.e(e, "onNextPageRequestError");
         view.onNextPageDataLoadFail(e);
     }
 
