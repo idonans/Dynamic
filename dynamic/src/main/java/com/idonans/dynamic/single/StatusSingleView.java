@@ -3,12 +3,11 @@ package com.idonans.dynamic.single;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.idonans.dynamic.LibLog;
 import com.idonans.dynamic.LoadingStatusCallback;
 import com.idonans.dynamic.LoadingStatusCallbackHost;
 
 import java.util.Collection;
-
-import timber.log.Timber;
 
 public class StatusSingleView<T> implements SingleView<T> {
 
@@ -84,7 +83,7 @@ public class StatusSingleView<T> implements SingleView<T> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        Timber.e("presenter is null");
+                        LibLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestInit(true);
@@ -110,7 +109,7 @@ public class StatusSingleView<T> implements SingleView<T> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        Timber.e("presenter is null");
+                        LibLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestInit(true);

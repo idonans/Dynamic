@@ -2,7 +2,7 @@ package com.idonans.dynamic;
 
 import androidx.annotation.Nullable;
 
-import com.idonans.lang.WeakAbortSignal;
+import com.idonans.core.WeakAbortSignal;
 
 public class DynamicPresenter<T extends DynamicView> extends WeakAbortSignal {
 

@@ -7,17 +7,17 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.idonans.dynamic.DynamicPresenter;
+import com.idonans.dynamic.LibLog;
 import com.idonans.lang.DisposableHolder;
 
 import java.util.Collection;
 import java.util.Objects;
 
-import io.reactivex.Single;
-import io.reactivex.SingleSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleSource;
+import io.reactivex.rxjava3.functions.Function;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public abstract class SinglePresenter<E, T extends SingleView<E>> extends DynamicPresenter<T> {
 
@@ -85,11 +85,11 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
      */
     @UiThread
     public void requestInit(boolean force) {
-        Timber.v("requestInit force:%s", force);
+        LibLog.v("requestInit force:%s", force);
 
         SingleView<E> view = getView();
         if (view == null) {
-            Timber.e("view is null");
+            LibLog.e("view is null");
             return;
         }
 
@@ -110,7 +110,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
                 .subscribe(items -> {
                     SingleView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -121,7 +121,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
                 }, e -> {
                     SingleView<E> innerView = getView();
                     if (innerView == null) {
-                        Timber.e("view is null");
+                        LibLog.e("view is null");
                         return;
                     }
 
@@ -139,7 +139,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
     @CallSuper
     @UiThread
     protected void onInitRequestResult(@NonNull SingleView<E> view, @NonNull Collection<E> items) {
-        Timber.v("onInitRequestResult %s items", items.size());
+        LibLog.v("onInitRequestResult %s items", items.size());
         view.onInitDataLoad(items);
         if (items.isEmpty()) {
             view.onInitDataEmpty();
@@ -149,7 +149,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
     @CallSuper
     @UiThread
     protected void onInitRequestError(@NonNull SingleView<E> view, @NonNull Throwable e) {
-        Timber.e(e, "onInitRequestError");
+        LibLog.e(e, "onInitRequestError");
         view.onInitDataLoadFail(e);
     }
 

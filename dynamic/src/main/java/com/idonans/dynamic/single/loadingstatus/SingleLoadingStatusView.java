@@ -15,9 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.base.Preconditions;
+import com.idonans.core.thread.Threads;
 import com.idonans.dynamic.R;
 import com.idonans.dynamic.single.StatusSingleViewAdapter;
-import com.idonans.lang.thread.Threads;
 
 import java.util.ArrayList;
 import java.util.Collection;
