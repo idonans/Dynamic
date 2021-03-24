@@ -12,6 +12,7 @@ public class DynamicPresenter<T extends DynamicView> extends WeakAbortSignal {
 
     @Nullable
     public T getView() {
+        //noinspection unchecked
         T view = (T) getObject();
         if (isAbort()) {
             return null;

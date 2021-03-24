@@ -42,7 +42,7 @@ public class StatusSingleView<T> implements SingleView<T> {
     }
 
     @NonNull
-    public StatusSingleViewAdapter getAdapter() {
+    public StatusSingleViewAdapter<T> getAdapter() {
         return mAdapter;
     }
 

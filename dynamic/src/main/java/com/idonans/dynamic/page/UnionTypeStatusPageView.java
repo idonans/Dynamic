@@ -98,7 +98,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_INIT_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_LARGE, new Object())
+                                new UnionTypeItemObject(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_LARGE, new Object())
                         )
                 );
                 return;
@@ -108,14 +108,14 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 mAdapter.setGroupItems(
                         GROUP_INIT_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_LARGE, new Object())
+                                new UnionTypeItemObject(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_LARGE, new Object())
                         )
                 );
             } else {
                 mAdapter.setGroupItems(
                         GROUP_INIT_STATUS,
                         Lists.newArrayList(
-                                new UnionTypeItemObject<>(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
+                                new UnionTypeItemObject(UnionTypeLoadingStatus.UNION_TYPE_LOADING_STATUS_LOADING_SMALL, new Object())
                         )
                 );
             }
