@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.collect.Lists;
-import com.idonans.dynamic.LibLog;
+import com.idonans.dynamic.DynamicLog;
 import com.idonans.dynamic.LoadingStatusCallback;
 import com.idonans.dynamic.LoadingStatusCallbackHost;
 import com.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
@@ -39,14 +39,14 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         mClearPageContentWhenRequestInit = clearPageContentWhenRequestInit;
         mAdapter.setOnLoadPrePageListener(() -> {
             if (mPresenter == null) {
-                LibLog.e("presenter is null");
+                DynamicLog.e("presenter is null");
                 return;
             }
             mPresenter.requestPrePage();
         });
         mAdapter.setOnLoadNextPageListener(() -> {
             if (mPresenter == null) {
-                LibLog.e("presenter is null");
+                DynamicLog.e("presenter is null");
                 return;
             }
             mPresenter.requestNextPage();
@@ -143,7 +143,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestInit(true);
@@ -175,7 +175,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestInit(true);
@@ -249,7 +249,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestPrePage(true);
@@ -284,7 +284,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestPrePage(true);
@@ -320,7 +320,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestPrePage(true);
@@ -381,7 +381,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestNextPage(true);
@@ -416,7 +416,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestNextPage(true);
@@ -452,7 +452,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestNextPage(true);

@@ -3,7 +3,7 @@ package com.idonans.dynamic.single;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idonans.dynamic.LibLog;
+import com.idonans.dynamic.DynamicLog;
 import com.idonans.dynamic.LoadingStatusCallback;
 import com.idonans.dynamic.LoadingStatusCallbackHost;
 
@@ -83,7 +83,7 @@ public class StatusSingleView<T> implements SingleView<T> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestInit(true);
@@ -109,7 +109,7 @@ public class StatusSingleView<T> implements SingleView<T> {
             public LoadingStatusCallback getLoadingStatusCallback() {
                 return () -> {
                     if (mPresenter == null) {
-                        LibLog.e("presenter is null");
+                        DynamicLog.e("presenter is null");
                         return;
                     }
                     mPresenter.requestInit(true);

@@ -7,7 +7,7 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.idonans.dynamic.DynamicPresenter;
-import com.idonans.dynamic.LibLog;
+import com.idonans.dynamic.DynamicLog;
 import com.idonans.lang.DisposableHolder;
 
 import java.util.Collection;
@@ -85,11 +85,11 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
      */
     @UiThread
     public void requestInit(boolean force) {
-        LibLog.v("requestInit force:%s", force);
+        DynamicLog.v("requestInit force:%s", force);
 
         SingleView<E> view = getView();
         if (view == null) {
-            LibLog.e("view is null");
+            DynamicLog.e("view is null");
             return;
         }
 
@@ -110,7 +110,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
                 .subscribe(items -> {
                     SingleView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -121,7 +121,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
                 }, e -> {
                     SingleView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -139,7 +139,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
     @CallSuper
     @UiThread
     protected void onInitRequestResult(@NonNull SingleView<E> view, @NonNull Collection<E> items) {
-        LibLog.v("onInitRequestResult %s items", items.size());
+        DynamicLog.v("onInitRequestResult %s items", items.size());
         view.onInitDataLoad(items);
         if (items.isEmpty()) {
             view.onInitDataEmpty();
@@ -149,7 +149,7 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
     @CallSuper
     @UiThread
     protected void onInitRequestError(@NonNull SingleView<E> view, @NonNull Throwable e) {
-        LibLog.e(e, "onInitRequestError");
+        DynamicLog.e(e, "onInitRequestError");
         view.onInitDataLoadFail(e);
     }
 

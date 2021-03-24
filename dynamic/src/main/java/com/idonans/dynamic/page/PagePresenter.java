@@ -7,7 +7,7 @@ import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
 import com.idonans.dynamic.DynamicPresenter;
-import com.idonans.dynamic.LibLog;
+import com.idonans.dynamic.DynamicLog;
 import com.idonans.lang.DisposableHolder;
 
 import java.util.Collection;
@@ -96,11 +96,11 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      */
     @UiThread
     public void requestInit(boolean force) {
-        LibLog.v("requestInit force:%s", force);
+        DynamicLog.v("requestInit force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
-            LibLog.e("view is null");
+            DynamicLog.e("view is null");
             return;
         }
 
@@ -150,7 +150,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 .subscribe(items -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -169,7 +169,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 }, e -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -200,21 +200,21 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      */
     @UiThread
     public void requestPrePage(boolean force) {
-        LibLog.v("requestPrePage force:%s", force);
+        DynamicLog.v("requestPrePage force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
-            LibLog.e("view is null");
+            DynamicLog.e("view is null");
             return;
         }
 
         if (mPrePageRequestStatus == null) {
-            LibLog.v("mPrePageRequestStatus is null");
+            DynamicLog.v("mPrePageRequestStatus is null");
             return;
         }
 
         if (!force && !view.hasPageContent()) {
-            LibLog.v("has no page content");
+            DynamicLog.v("has no page content");
             return;
         }
 
@@ -237,7 +237,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 .subscribe(items -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -248,7 +248,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 }, e -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -271,21 +271,21 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
      */
     @UiThread
     public void requestNextPage(boolean force) {
-        LibLog.v("requestNextPage force:%s", force);
+        DynamicLog.v("requestNextPage force:%s", force);
 
         PageView<E> view = getView();
         if (view == null) {
-            LibLog.e("view is null");
+            DynamicLog.e("view is null");
             return;
         }
 
         if (mNextPageRequestStatus == null) {
-            LibLog.v("mNextPageRequestStatus is null");
+            DynamicLog.v("mNextPageRequestStatus is null");
             return;
         }
 
         if (!force && !view.hasPageContent()) {
-            LibLog.v("has no page content");
+            DynamicLog.v("has no page content");
             return;
         }
 
@@ -308,7 +308,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 .subscribe(items -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -319,7 +319,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
                 }, e -> {
                     PageView<E> innerView = getView();
                     if (innerView == null) {
-                        LibLog.e("view is null");
+                        DynamicLog.e("view is null");
                         return;
                     }
 
@@ -337,7 +337,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onInitRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        LibLog.v("onInitRequestResult %s items", items.size());
+        DynamicLog.v("onInitRequestResult %s items", items.size());
         view.onInitDataLoad(items);
         if (items.isEmpty()) {
             view.onInitDataEmpty();
@@ -347,7 +347,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onInitRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        LibLog.e(e, "onInitRequestError");
+        DynamicLog.e(e, "onInitRequestError");
         view.onInitDataLoadFail(e);
     }
 
@@ -358,7 +358,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onPrePageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        LibLog.v("onPrePageRequestResult %s items", items.size());
+        DynamicLog.v("onPrePageRequestResult %s items", items.size());
         view.onPrePageDataLoad(items);
         if (items.isEmpty()) {
             view.onPrePageDataEmpty();
@@ -368,7 +368,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onPrePageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        LibLog.e(e, "onPrePageRequestError");
+        DynamicLog.e(e, "onPrePageRequestError");
         view.onPrePageDataLoadFail(e);
     }
 
@@ -379,7 +379,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onNextPageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        LibLog.v("onNextPageRequestResult %s items", items.size());
+        DynamicLog.v("onNextPageRequestResult %s items", items.size());
         view.onNextPageDataLoad(items);
         if (items.isEmpty()) {
             view.onNextPageDataEmpty();
@@ -389,7 +389,7 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     @CallSuper
     @UiThread
     protected void onNextPageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        LibLog.e(e, "onNextPageRequestError");
+        DynamicLog.e(e, "onNextPageRequestError");
         view.onNextPageDataLoadFail(e);
     }
 
