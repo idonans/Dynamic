@@ -93,10 +93,10 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void showInitLoading() {
         DynamicLog.v("showInitLoading");
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("showInitLoading postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("showInitLoading post run");
             final boolean clearPageContentWhenRequestInit = isClearPageContentWhenRequestInit();
-            DynamicLog.v("showInitLoading postOnAnimation run clearPageContentWhenRequestInit:%s", clearPageContentWhenRequestInit);
+            DynamicLog.v("showInitLoading post run clearPageContentWhenRequestInit:%s", clearPageContentWhenRequestInit);
             if (clearPageContentWhenRequestInit) {
                 onClearPageContent();
                 mAdapter.setGroupItems(
@@ -108,7 +108,7 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
                 return;
             }
             boolean hasPageContent = hasPageContent();
-            DynamicLog.v("showInitLoading postOnAnimation run hasPageContent:%s", hasPageContent);
+            DynamicLog.v("showInitLoading post run hasPageContent:%s", hasPageContent);
             if (!hasPageContent) {
                 mAdapter.setGroupItems(
                         GROUP_INIT_STATUS,
@@ -131,8 +131,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void hideInitLoading() {
         DynamicLog.v("hideInitLoading");
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("hideInitLoading postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("hideInitLoading post run");
             mAdapter.clearGroupItems(GROUP_INIT_STATUS);
         });
     }
@@ -142,8 +142,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void onInitDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
         DynamicLog.v("onInitDataLoad items size:%s", items.size());
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("onInitDataLoad postOnAnimation run items size:%s", items.size());
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("onInitDataLoad post run items size:%s", items.size());
             mAdapter.setGroupItems(GROUP_DEFAULT, items);
         });
     }
@@ -172,8 +172,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("onInitDataEmpty postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("onInitDataEmpty post run");
             onClearPageContent();
             mAdapter.setGroupItems(
                     GROUP_INIT_STATUS,
@@ -206,8 +206,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("onInitDataLoadFail postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("onInitDataLoadFail post run");
             boolean hasPageContent = hasPageContent();
             if (!hasPageContent) {
                 mAdapter.setGroupItems(
@@ -237,8 +237,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void showPrePageLoading() {
         DynamicLog.v("showPrePageLoading");
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-                    DynamicLog.v("showPrePageLoading postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+                    DynamicLog.v("showPrePageLoading post run");
                     mAdapter.setGroupItems(
                             GROUP_HEADER_STATUS,
                             Lists.newArrayList(
@@ -253,8 +253,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void hidePrePageLoading() {
         DynamicLog.v("hidePrePageLoading");
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("hidePrePageLoading postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("hidePrePageLoading post run");
             mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
         });
     }
@@ -263,8 +263,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void onPrePageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
         DynamicLog.v("onPrePageDataLoad items size:%s", items.size());
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("onPrePageDataLoad postOnAnimation run items size:%s", items.size());
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("onPrePageDataLoad post run items size:%s", items.size());
             mAdapter.insertGroupItems(GROUP_DEFAULT, 0, items);
         });
     }
@@ -293,8 +293,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("onPrePageDataEmpty postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("onPrePageDataEmpty post run");
             if (mAlwaysHidePrePageNoMoreData) {
                 mAdapter.clearGroupItems(GROUP_HEADER_STATUS);
             } else {
@@ -330,8 +330,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-                    DynamicLog.v("onPrePageDataLoadFail postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+                    DynamicLog.v("onPrePageDataLoadFail post run");
                     mAdapter.setGroupItems(
                             GROUP_HEADER_STATUS,
                             Lists.newArrayList(
@@ -369,8 +369,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-                    DynamicLog.v("showPrePageManualToLoadMore postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+                    DynamicLog.v("showPrePageManualToLoadMore post run");
                     mAdapter.setGroupItems(
                             GROUP_HEADER_STATUS,
                             Lists.newArrayList(
@@ -388,8 +388,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void showNextPageLoading() {
         DynamicLog.v("showNextPageLoading");
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-                    DynamicLog.v("showNextPageLoading postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+                    DynamicLog.v("showNextPageLoading post run");
                     mAdapter.setGroupItems(
                             GROUP_FOOTER_STATUS,
                             Lists.newArrayList(
@@ -404,8 +404,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void hideNextPageLoading() {
         DynamicLog.v("hideNextPageLoading");
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("hideNextPageLoading postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("hideNextPageLoading post run");
             mAdapter.clearGroupItems(GROUP_FOOTER_STATUS);
         });
     }
@@ -414,8 +414,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
     public void onNextPageDataLoad(@NonNull Collection<UnionTypeItemObject> items) {
         DynamicLog.v("onNextPageDataLoad items size:%s", items.size());
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("onNextPageDataLoad postOnAnimation run items size:%s", items.size());
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("onNextPageDataLoad post run items size:%s", items.size());
             mAdapter.appendGroupItems(GROUP_DEFAULT, items);
         });
     }
@@ -444,8 +444,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-            DynamicLog.v("onNextPageDataEmpty postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+            DynamicLog.v("onNextPageDataEmpty post run");
             if (mAlwaysHideNextPageNoMoreData) {
                 mAdapter.clearGroupItems(GROUP_FOOTER_STATUS);
             } else {
@@ -481,8 +481,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-                    DynamicLog.v("onNextPageDataLoadFail postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+                    DynamicLog.v("onNextPageDataLoadFail post run");
                     mAdapter.setGroupItems(
                             GROUP_FOOTER_STATUS,
                             Lists.newArrayList(
@@ -520,8 +520,8 @@ public class UnionTypeStatusPageView implements PageView<UnionTypeItemObject> {
         };
 
         Host host = mAdapter.getHost();
-        host.getRecyclerView().postOnAnimation(() -> {
-                    DynamicLog.v("showNextPageManualToLoadMore postOnAnimation run");
+        host.getRecyclerView().post(() -> {
+                    DynamicLog.v("showNextPageManualToLoadMore post run");
                     mAdapter.setGroupItems(
                             GROUP_FOOTER_STATUS,
                             Lists.newArrayList(
