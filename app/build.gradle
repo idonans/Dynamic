@@ -5,7 +5,7 @@ android {
     buildToolsVersion rootProject.ext.bcfg.ver.build_tools
 
     defaultConfig {
-        applicationId "com.idonans.example.dynamic"
+        applicationId "io.github.idonans.example.dynamic"
         minSdkVersion rootProject.ext.bcfg.ver.min_sdk
         targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
         versionCode rootProject.ext.bcfg.ver.versionCode

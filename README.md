@@ -1,9 +1,10 @@
-# Dynamic
+Dynamic
+==========
 
-[ ![Download](https://api.bintray.com/packages/idonans/maven/dynamic/images/download.svg) ](https://bintray.com/idonans/maven/dynamic/_latestVersion)
+Releases
+--------
+The latest release is available on [![Maven Central](https://img.shields.io/maven-central/v/io.github.idonans.dynamic/dynamic.svg?label=Maven%20Central)](https://search.maven.org/artifact/io.github.idonans.dynamic/dynamic)
+
 ```groovy
-
-    implementation 'com.idonans.dynamic:dynamic:$latestVersion'
-
+    implementation 'io.github.idonans.dynamic:dynamic:$latestVersion'
 ```
-
