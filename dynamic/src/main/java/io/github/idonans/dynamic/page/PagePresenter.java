@@ -6,13 +6,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
-import io.github.idonans.dynamic.DynamicPresenter;
-import io.github.idonans.dynamic.DynamicLog;
-import io.github.idonans.lang.DisposableHolder;
-
 import java.util.Collection;
 import java.util.Objects;
 
+import io.github.idonans.dynamic.DynamicLog;
+import io.github.idonans.dynamic.DynamicPresenter;
+import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
@@ -42,6 +41,21 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         mInitRequestStatus = new RequestStatus();
         mPrePageRequestStatus = supportPrePageRequest ? new RequestStatus() : null;
         mNextPageRequestStatus = supportNextPageRequest ? new RequestStatus() : null;
+    }
+
+    @NonNull
+    public RequestStatus getInitRequestStatus() {
+        return mInitRequestStatus;
+    }
+
+    @Nullable
+    public RequestStatus getPrePageRequestStatus() {
+        return mPrePageRequestStatus;
+    }
+
+    @Nullable
+    public RequestStatus getNextPageRequestStatus() {
+        return mNextPageRequestStatus;
     }
 
     /**
@@ -393,11 +407,27 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         view.onNextPageDataLoadFail(e);
     }
 
-    private static class RequestStatus {
+    public static class RequestStatus {
         private boolean mLoading;
         private boolean mError;
         private boolean mEnd;
         private boolean mManualToLoad; // 手动触发模式，如点击加载
+
+        public boolean isLoading() {
+            return mLoading;
+        }
+
+        public boolean isError() {
+            return mError;
+        }
+
+        public boolean isEnd() {
+            return mEnd;
+        }
+
+        public boolean isManualToLoad() {
+            return mManualToLoad;
+        }
 
         void reset() {
             this.mLoading = false;
