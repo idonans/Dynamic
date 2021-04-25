@@ -35,6 +35,7 @@ dependencies {
     api rootProject.ext.bcfg.deps.androidx_recyclerview
     api rootProject.ext.bcfg.deps.idonans_appcontext
     api rootProject.ext.bcfg.deps.idonans_lang
+    api rootProject.ext.bcfg.deps.idonans_core
     api rootProject.ext.bcfg.deps.idonans_uniontype
 }
 
