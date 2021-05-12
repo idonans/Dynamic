@@ -3,10 +3,8 @@ package io.github.idonans.dynamic.pulllayout;
 import android.animation.Animator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,14 +21,14 @@ import androidx.core.view.NestedScrollingParent2;
 import androidx.core.view.NestedScrollingParentHelper;
 import androidx.core.view.ViewCompat;
 
-import io.github.idonans.core.util.DimenUtil;
-import io.github.idonans.dynamic.DynamicLog;
-import io.github.idonans.dynamic.R;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import javax.annotation.Nonnull;
+
+import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.dynamic.DynamicLog;
+import io.github.idonans.dynamic.R;
 
 public class PullLayout extends FrameLayout implements NestedScrollingParent2, NestedScrollingChild2 {
 
@@ -43,11 +41,9 @@ public class PullLayout extends FrameLayout implements NestedScrollingParent2, N
     }
 
     public PullLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        initFromAttributes(context, attrs, defStyleAttr, 0);
+        this(context, attrs, defStyleAttr, 0);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PullLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
