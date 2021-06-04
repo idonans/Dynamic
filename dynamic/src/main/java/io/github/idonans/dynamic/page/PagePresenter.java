@@ -160,10 +160,10 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
     protected void onPrePageRequestResult(@NonNull PageView<A, B> view, @NonNull DynamicResult<A, B> result) {
         DynamicLog.v("onPrePageRequestResult");
 
-        if (result.error != null) {
+        if (result.items == null) {
             mPrePageRequestStatus.setError();
         } else {
-            mPrePageRequestStatus.setEnd(result.items == null || result.items.isEmpty());
+            mPrePageRequestStatus.setEnd(result.items.isEmpty());
         }
         view.onPrePageRequestResult(result);
     }
@@ -246,10 +246,10 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
     protected void onNextPageRequestResult(@NonNull PageView<A, B> view, @NonNull DynamicResult<A, B> result) {
         DynamicLog.v("onNextPageRequestResult");
 
-        if (result.error != null) {
+        if (result.items == null) {
             mNextPageRequestStatus.setError();
         } else {
-            mNextPageRequestStatus.setEnd(result.items == null || result.items.isEmpty());
+            mNextPageRequestStatus.setEnd(result.items.isEmpty());
         }
         view.onNextPageRequestResult(result);
     }
