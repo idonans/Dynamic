@@ -25,22 +25,10 @@ public abstract class UnionTypeStatusSingleView<T> extends DefaultUnionTypeGroup
     private boolean mClearContentWhenRequestInit;
 
     @Nullable
-    private SinglePresenter<UnionTypeItemObject, T, UnionTypeStatusSingleView<T>> mPresenter;
+    private SinglePresenter<UnionTypeItemObject, T, ? extends UnionTypeStatusSingleView<T>> mPresenter;
 
     public UnionTypeStatusSingleView(@NonNull UnionTypeAdapter adapter) {
         mAdapter = adapter;
-    }
-
-    public void setClearContentWhenRequestInit(boolean clearContentWhenRequestInit) {
-        mClearContentWhenRequestInit = clearContentWhenRequestInit;
-    }
-
-    public void setPresenter(@Nullable SinglePresenter<UnionTypeItemObject, T, UnionTypeStatusSingleView<T>> presenter) {
-        mPresenter = presenter;
-    }
-
-    public boolean isClearContentWhenRequestInit() {
-        return mClearContentWhenRequestInit;
     }
 
     @NonNull
@@ -48,9 +36,21 @@ public abstract class UnionTypeStatusSingleView<T> extends DefaultUnionTypeGroup
         return mAdapter;
     }
 
+    public void setPresenter(@Nullable SinglePresenter<UnionTypeItemObject, T, ? extends UnionTypeStatusSingleView<T>> presenter) {
+        mPresenter = presenter;
+    }
+
     @Nullable
-    public SinglePresenter<UnionTypeItemObject, T, UnionTypeStatusSingleView<T>> getPresenter() {
+    public SinglePresenter<UnionTypeItemObject, T, ? extends UnionTypeStatusSingleView<T>> getPresenter() {
         return mPresenter;
+    }
+
+    public void setClearContentWhenRequestInit(boolean clearContentWhenRequestInit) {
+        mClearContentWhenRequestInit = clearContentWhenRequestInit;
+    }
+
+    public boolean isClearContentWhenRequestInit() {
+        return mClearContentWhenRequestInit;
     }
 
     @Override
@@ -70,7 +70,7 @@ public abstract class UnionTypeStatusSingleView<T> extends DefaultUnionTypeGroup
                                 )
                         );
                     } else {
-                        // 则使用小的 loading
+                        // 使用小的 loading
                         groupArrayList.setGroupItems(
                                 getGroupHeader(),
                                 Lists.newArrayList(

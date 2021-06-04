@@ -50,7 +50,7 @@ public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends 
         DynamicLog.v("requestInit force:%s", force);
 
         {
-            SingleView<A, B> view = getView();
+            final SingleView<A, B> view = getView();
             if (view == null) {
                 DynamicLog.e("view is null");
                 return;

@@ -2,46 +2,17 @@ package io.github.idonans.dynamic.page;
 
 import androidx.annotation.NonNull;
 
-import java.util.Collection;
+import io.github.idonans.dynamic.DynamicResult;
+import io.github.idonans.dynamic.single.SingleView;
 
-import io.github.idonans.dynamic.DynamicView;
+public interface PageView<A, B> extends SingleView<A, B> {
 
-public interface PageView<E> extends DynamicView {
+    void onPrePageRequest();
 
-    boolean isClearPageContentWhenRequestInit();
+    void onPrePageRequestResult(@NonNull DynamicResult<A, B> result);
 
-    void showInitLoading();
+    void onNextPageRequest();
 
-    void hideInitLoading();
-
-    void showPrePageLoading();
-
-    void showPrePageManualToLoadMore();
-
-    void hidePrePageLoading();
-
-    void showNextPageLoading();
-
-    void showNextPageManualToLoadMore();
-
-    void hideNextPageLoading();
-
-    void onInitDataLoad(@NonNull Collection<E> items);
-
-    void onInitDataEmpty();
-
-    void onInitDataLoadFail(@NonNull Throwable e);
-
-    void onPrePageDataLoad(@NonNull Collection<E> items);
-
-    void onPrePageDataEmpty();
-
-    void onPrePageDataLoadFail(@NonNull Throwable e);
-
-    void onNextPageDataLoad(@NonNull Collection<E> items);
-
-    void onNextPageDataEmpty();
-
-    void onNextPageDataLoadFail(@NonNull Throwable e);
+    void onNextPageRequestResult(@NonNull DynamicResult<A, B> result);
 
 }

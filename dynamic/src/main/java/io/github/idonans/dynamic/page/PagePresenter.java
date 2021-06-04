@@ -6,12 +6,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import io.github.idonans.dynamic.DynamicLog;
-import io.github.idonans.dynamic.DynamicPresenter;
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.RequestStatus;
+import io.github.idonans.dynamic.single.SinglePresenter;
+import io.github.idonans.dynamic.single.SingleView;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -22,148 +23,63 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 /**
  * 分页数据请求由 请求初始数据+请求上一页数据+请求下一页数据 组成。
  */
-public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPresenter<T> {
+public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends SinglePresenter<A, B, T> {
 
-    protected final DisposableHolder mInitRequestHolder = new DisposableHolder();
     protected final DisposableHolder mPrePageRequestHolder = new DisposableHolder();
     protected final DisposableHolder mNextPageRequestHolder = new DisposableHolder();
 
     @NonNull
-    private final RequestStatus mInitRequestStatus;
-    @Nullable
     private final RequestStatus mPrePageRequestStatus;
-    @Nullable
-    private final RequestStatus mNextPageRequestStatus;
+    private boolean mPrePageRequestEnable;
 
-    public PagePresenter(T view, boolean supportPrePageRequest, boolean supportNextPageRequest) {
+    @NonNull
+    private final RequestStatus mNextPageRequestStatus;
+    private boolean mNextPageRequestEnable;
+
+    public PagePresenter(T view) {
         super(view);
 
-        mInitRequestStatus = new RequestStatus();
-        mPrePageRequestStatus = supportPrePageRequest ? new RequestStatus() : null;
-        mNextPageRequestStatus = supportNextPageRequest ? new RequestStatus() : null;
-
-        mRequestHolderList.add(mInitRequestHolder);
+        mPrePageRequestStatus = new RequestStatus();
+        mNextPageRequestStatus = new RequestStatus();
         mRequestHolderList.add(mPrePageRequestHolder);
         mRequestHolderList.add(mNextPageRequestHolder);
     }
 
     @NonNull
-    public RequestStatus getInitRequestStatus() {
-        return mInitRequestStatus;
-    }
-
-    @Nullable
     public RequestStatus getPrePageRequestStatus() {
         return mPrePageRequestStatus;
     }
 
-    @Nullable
+    public void setPrePageRequestEnable(boolean prePageRequestEnable) {
+        mPrePageRequestEnable = prePageRequestEnable;
+    }
+
+    public boolean isPrePageRequestEnable() {
+        return mPrePageRequestEnable;
+    }
+
+    @NonNull
     public RequestStatus getNextPageRequestStatus() {
         return mNextPageRequestStatus;
     }
 
+    public void setNextPageRequestEnable(boolean nextPageRequestEnable) {
+        mNextPageRequestEnable = nextPageRequestEnable;
+    }
 
-    @UiThread
-    public void requestInit() {
-        requestInit(false);
+    public boolean isNextPageRequestEnable() {
+        return mNextPageRequestEnable;
     }
 
     /**
-     * 请求初始数据。
-     * <br/>当发起请求初始数据时，会中断旧的初始数据请求，上一页数据请求和下一页数据请求。
+     * 当发起请求初始数据时，会中断旧的初始数据请求，上一页数据请求和下一页数据请求。
      */
-    @UiThread
-    public void requestInit(boolean force) {
-        DynamicLog.v("requestInit force:%s", force);
+    @Override
+    protected void onInitRequest(@NonNull SingleView<A, B> view) {
+        mPrePageRequestStatus.reset();
+        mNextPageRequestStatus.reset();
 
-        PageView<E> view = getView();
-        if (view == null) {
-            DynamicLog.e("view is null");
-            return;
-        }
-
-        if (!force && !mInitRequestStatus.allowRequest()) {
-            return;
-        }
-
-        clearRequestExcept();
-
-        final boolean clearPageContent = view.isClearPageContentWhenRequestInit();
-        final boolean hasPageContent = view.hasPageContent();
-
-        if (clearPageContent) {
-            if (mPrePageRequestStatus != null) {
-                mPrePageRequestStatus.reset();
-                view.hidePrePageLoading();
-            }
-            if (mNextPageRequestStatus != null) {
-                mNextPageRequestStatus.reset();
-                view.hideNextPageLoading();
-            }
-        } else {
-            if (mPrePageRequestStatus != null) {
-                if (mPrePageRequestStatus.mLoading
-                        || (hasPageContent && mPrePageRequestStatus.allowRequest())) {
-                    mPrePageRequestStatus.setManualToLoad();
-                    view.showPrePageManualToLoadMore();
-                }
-            }
-            if (mNextPageRequestStatus != null) {
-                if (mNextPageRequestStatus.mLoading
-                        || (hasPageContent && mNextPageRequestStatus.allowRequest())) {
-                    mNextPageRequestStatus.setManualToLoad();
-                    view.showNextPageManualToLoadMore();
-                }
-            }
-        }
-
-        mInitRequestStatus.setLoading();
-        view.showInitLoading();
-
-        mInitRequestHolder.set(Single.just(this)
-                .flatMap((Function<Object, SingleSource<Collection<E>>>) object -> createInitRequest())
-                .map(Objects::requireNonNull)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(items -> {
-                    PageView<E> innerView = getView();
-                    if (innerView == null) {
-                        DynamicLog.e("view is null");
-                        return;
-                    }
-
-                    if (mPrePageRequestStatus != null) {
-                        mPrePageRequestStatus.reset();
-                    }
-
-                    if (mNextPageRequestStatus != null) {
-                        mNextPageRequestStatus.reset();
-                    }
-
-                    mInitRequestStatus.setEnd(items.isEmpty());
-                    innerView.hideInitLoading();
-
-                    onInitRequestResult(innerView, items);
-                }, e -> {
-                    PageView<E> innerView = getView();
-                    if (innerView == null) {
-                        DynamicLog.e("view is null");
-                        return;
-                    }
-
-                    if (mPrePageRequestStatus != null) {
-                        mPrePageRequestStatus.reset();
-                    }
-
-                    if (mNextPageRequestStatus != null) {
-                        mNextPageRequestStatus.reset();
-                    }
-
-                    mInitRequestStatus.setError();
-                    innerView.hideInitLoading();
-
-                    onInitRequestError(innerView, e);
-                }));
+        super.onInitRequest(view);
     }
 
     @UiThread
@@ -180,61 +96,76 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     public void requestPrePage(boolean force) {
         DynamicLog.v("requestPrePage force:%s", force);
 
-        PageView<E> view = getView();
-        if (view == null) {
-            DynamicLog.e("view is null");
-            return;
+        {
+            final PageView<A, B> view = getView();
+            if (view == null) {
+                DynamicLog.e("view is null");
+                return;
+            }
+
+            if (!mPrePageRequestEnable) {
+                DynamicLog.v("mPrePageRequestEnable is false");
+                return;
+            }
+
+            if (!force && !mPrePageRequestStatus.allowRequest()) {
+                return;
+            }
+
+            onPrePageRequest(view);
         }
-
-        if (mPrePageRequestStatus == null) {
-            DynamicLog.v("mPrePageRequestStatus is null");
-            return;
-        }
-
-        if (!force && !view.hasPageContent()) {
-            DynamicLog.v("has no page content");
-            return;
-        }
-
-        if (!force && !mPrePageRequestStatus.allowRequest()) {
-            return;
-        }
-
-        clearRequestExcept(mNextPageRequestHolder);
-
-        mPrePageRequestStatus.setLoading();
-        mInitRequestStatus.reset();
-        view.hideInitLoading();
-        view.showPrePageLoading();
 
         mPrePageRequestHolder.set(Single.just(this)
-                .flatMap((Function<Object, SingleSource<Collection<E>>>) object -> createPrePageRequest())
+                .flatMap((Function<Object, SingleSource<DynamicResult<A, B>>>) object -> createPrePageRequest())
                 .map(Objects::requireNonNull)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(items -> {
-                    PageView<E> innerView = getView();
+                .subscribe(result -> {
+                    final PageView<A, B> innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
                     }
 
-                    mPrePageRequestStatus.setEnd(items.isEmpty());
-                    innerView.hidePrePageLoading();
-
-                    onPrePageRequestResult(innerView, items);
+                    onPrePageRequestResult(innerView, result);
                 }, e -> {
-                    PageView<E> innerView = getView();
+                    final PageView<A, B> innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
                     }
 
-                    mPrePageRequestStatus.setError();
-                    innerView.hidePrePageLoading();
-
-                    onPrePageRequestError(innerView, e);
+                    onPrePageRequestResult(innerView, new DynamicResult<A, B>().setError(e));
                 }));
+    }
+
+    @UiThread
+    protected void onPrePageRequest(@NonNull PageView<A, B> view) {
+        DynamicLog.v("onPrePageRequest");
+
+        clearRequestExcept(mNextPageRequestHolder);
+        mPrePageRequestStatus.setLoading();
+        getInitRequestStatus().reset();
+        view.onPrePageRequest();
+    }
+
+    @WorkerThread
+    @Nullable
+    protected SingleSource<DynamicResult<A, B>> createPrePageRequest() throws Exception {
+        throw new RuntimeException("not implements");
+    }
+
+    @CallSuper
+    @UiThread
+    protected void onPrePageRequestResult(@NonNull PageView<A, B> view, @NonNull DynamicResult<A, B> result) {
+        DynamicLog.v("onPrePageRequestResult");
+
+        if (result.error != null) {
+            mPrePageRequestStatus.setError();
+        } else {
+            mPrePageRequestStatus.setEnd(result.items == null || result.items.isEmpty());
+        }
+        view.onPrePageRequestResult(result);
     }
 
     @UiThread
@@ -251,124 +182,76 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     public void requestNextPage(boolean force) {
         DynamicLog.v("requestNextPage force:%s", force);
 
-        PageView<E> view = getView();
-        if (view == null) {
-            DynamicLog.e("view is null");
-            return;
+        {
+            final PageView<A, B> view = getView();
+            if (view == null) {
+                DynamicLog.e("view is null");
+                return;
+            }
+
+            if (!mNextPageRequestEnable) {
+                DynamicLog.v("mNextPageRequestEnable is false");
+                return;
+            }
+
+            if (!force && !mNextPageRequestStatus.allowRequest()) {
+                return;
+            }
+
+            onNextPageRequest(view);
         }
-
-        if (mNextPageRequestStatus == null) {
-            DynamicLog.v("mNextPageRequestStatus is null");
-            return;
-        }
-
-        if (!force && !view.hasPageContent()) {
-            DynamicLog.v("has no page content");
-            return;
-        }
-
-        if (!force && !mNextPageRequestStatus.allowRequest()) {
-            return;
-        }
-
-        clearRequestExcept(mPrePageRequestHolder);
-
-        mNextPageRequestStatus.setLoading();
-        mInitRequestStatus.reset();
-        view.hideInitLoading();
-        view.showNextPageLoading();
 
         mNextPageRequestHolder.set(Single.just(this)
-                .flatMap((Function<Object, SingleSource<Collection<E>>>) object -> createNextPageRequest())
+                .flatMap((Function<Object, SingleSource<DynamicResult<A, B>>>) object -> createNextPageRequest())
                 .map(Objects::requireNonNull)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(items -> {
-                    PageView<E> innerView = getView();
+                .subscribe(result -> {
+                    final PageView<A, B> innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
                     }
 
-                    mNextPageRequestStatus.setEnd(items.isEmpty());
-                    innerView.hideNextPageLoading();
-
-                    onNextPageRequestResult(innerView, items);
+                    onNextPageRequestResult(innerView, result);
                 }, e -> {
-                    PageView<E> innerView = getView();
+                    final PageView<A, B> innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
                     }
 
-                    mNextPageRequestStatus.setError();
-                    innerView.hideNextPageLoading();
-
-                    onNextPageRequestError(innerView, e);
+                    onNextPageRequestResult(innerView, new DynamicResult<A, B>().setError(e));
                 }));
     }
 
-    @WorkerThread
-    @Nullable
-    protected abstract SingleSource<Collection<E>> createInitRequest() throws Exception;
-
-    @CallSuper
     @UiThread
-    protected void onInitRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        DynamicLog.v("onInitRequestResult %s items", items.size());
-        view.onInitDataLoad(items);
-        if (items.isEmpty()) {
-            view.onInitDataEmpty();
-        }
-    }
+    protected void onNextPageRequest(@NonNull PageView<A, B> view) {
+        DynamicLog.v("onNextPageRequest");
 
-    @CallSuper
-    @UiThread
-    protected void onInitRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        DynamicLog.e(e, "onInitRequestError");
-        view.onInitDataLoadFail(e);
+        clearRequestExcept(mPrePageRequestHolder);
+        mNextPageRequestStatus.setLoading();
+        getInitRequestStatus().reset();
+        view.onNextPageRequest();
     }
 
     @WorkerThread
     @Nullable
-    protected abstract SingleSource<Collection<E>> createPrePageRequest() throws Exception;
+    protected SingleSource<DynamicResult<A, B>> createNextPageRequest() throws Exception {
+        throw new RuntimeException("not implements");
+    }
 
     @CallSuper
     @UiThread
-    protected void onPrePageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        DynamicLog.v("onPrePageRequestResult %s items", items.size());
-        view.onPrePageDataLoad(items);
-        if (items.isEmpty()) {
-            view.onPrePageDataEmpty();
+    protected void onNextPageRequestResult(@NonNull PageView<A, B> view, @NonNull DynamicResult<A, B> result) {
+        DynamicLog.v("onNextPageRequestResult");
+
+        if (result.error != null) {
+            mNextPageRequestStatus.setError();
+        } else {
+            mNextPageRequestStatus.setEnd(result.items == null || result.items.isEmpty());
         }
-    }
-
-    @CallSuper
-    @UiThread
-    protected void onPrePageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        DynamicLog.e(e, "onPrePageRequestError");
-        view.onPrePageDataLoadFail(e);
-    }
-
-    @WorkerThread
-    @Nullable
-    protected abstract SingleSource<Collection<E>> createNextPageRequest() throws Exception;
-
-    @CallSuper
-    @UiThread
-    protected void onNextPageRequestResult(@NonNull PageView<E> view, @NonNull Collection<E> items) {
-        DynamicLog.v("onNextPageRequestResult %s items", items.size());
-        view.onNextPageDataLoad(items);
-        if (items.isEmpty()) {
-            view.onNextPageDataEmpty();
-        }
-    }
-
-    @CallSuper
-    @UiThread
-    protected void onNextPageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
-        DynamicLog.e(e, "onNextPageRequestError");
-        view.onNextPageDataLoadFail(e);
+        view.onNextPageRequestResult(result);
     }
 
 }
