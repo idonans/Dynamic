@@ -104,7 +104,7 @@ public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends 
     protected void onInitRequestResult(@NonNull SingleView<A, B> view, @NonNull DynamicResult<A, B> result) {
         DynamicLog.v("onInitRequestResult");
 
-        if (result.items == null) {
+        if (result.isError()) {
             mInitRequestStatus.setError();
         } else {
             mInitRequestStatus.setEnd(true);

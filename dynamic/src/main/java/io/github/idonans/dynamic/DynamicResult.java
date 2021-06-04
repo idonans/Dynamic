@@ -30,4 +30,18 @@ public class DynamicResult<A, B> {
         return this;
     }
 
+    /**
+     * 当前数据是否出错(数据加载失败)
+     */
+    public boolean isError() {
+        return this.items == null;
+    }
+
+    /**
+     * 当前数据是否已经结束(没有更多数据了)
+     */
+    public boolean isEnd() {
+        return this.items != null && this.items.isEmpty();
+    }
+
 }
