@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import io.github.idonans.dynamic.DynamicLog;
 import io.github.idonans.dynamic.DynamicPresenter;
+import io.github.idonans.dynamic.RequestStatus;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -26,7 +27,6 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     protected final DisposableHolder mInitRequestHolder = new DisposableHolder();
     protected final DisposableHolder mPrePageRequestHolder = new DisposableHolder();
     protected final DisposableHolder mNextPageRequestHolder = new DisposableHolder();
-    protected final DisposableHolder[] mRequestHolders = {mInitRequestHolder, mPrePageRequestHolder, mNextPageRequestHolder};
 
     @NonNull
     private final RequestStatus mInitRequestStatus;
@@ -41,6 +41,10 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         mInitRequestStatus = new RequestStatus();
         mPrePageRequestStatus = supportPrePageRequest ? new RequestStatus() : null;
         mNextPageRequestStatus = supportNextPageRequest ? new RequestStatus() : null;
+
+        mRequestHolderList.add(mInitRequestHolder);
+        mRequestHolderList.add(mPrePageRequestHolder);
+        mRequestHolderList.add(mNextPageRequestHolder);
     }
 
     @NonNull
@@ -58,46 +62,6 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
         return mNextPageRequestStatus;
     }
 
-    /**
-     * 除了指定的请求外，清除其它请求。
-     *
-     * @param excepts
-     */
-    @UiThread
-    protected void clearRequestExcept(DisposableHolder... excepts) {
-        for (DisposableHolder target : mRequestHolders) {
-            boolean matchExcept = false;
-            if (excepts != null) {
-                for (DisposableHolder except : excepts) {
-                    if (target == except) {
-                        matchExcept = true;
-                        break;
-                    }
-                }
-            }
-            if (!matchExcept) {
-                if (target != null) {
-                    target.clear();
-                }
-            }
-        }
-    }
-
-    /**
-     * 清除指定请求
-     *
-     * @param targets
-     */
-    @UiThread
-    protected void clearRequest(DisposableHolder... targets) {
-        if (targets != null) {
-            for (DisposableHolder target : targets) {
-                if (target != null) {
-                    target.clear();
-                }
-            }
-        }
-    }
 
     @UiThread
     public void requestInit() {
@@ -405,68 +369,6 @@ public abstract class PagePresenter<E, T extends PageView<E>> extends DynamicPre
     protected void onNextPageRequestError(@NonNull PageView<E> view, @NonNull Throwable e) {
         DynamicLog.e(e, "onNextPageRequestError");
         view.onNextPageDataLoadFail(e);
-    }
-
-    public static class RequestStatus {
-        private boolean mLoading;
-        private boolean mError;
-        private boolean mEnd;
-        private boolean mManualToLoad; // 手动触发模式，如点击加载
-
-        public boolean isLoading() {
-            return mLoading;
-        }
-
-        public boolean isError() {
-            return mError;
-        }
-
-        public boolean isEnd() {
-            return mEnd;
-        }
-
-        public boolean isManualToLoad() {
-            return mManualToLoad;
-        }
-
-        void reset() {
-            this.mLoading = false;
-            this.mError = false;
-            this.mEnd = false;
-            this.mManualToLoad = false;
-        }
-
-        boolean allowRequest() {
-            return !this.mLoading && !this.mError && !this.mEnd && !this.mManualToLoad;
-        }
-
-        void setLoading() {
-            mLoading = true;
-            mError = false;
-            mEnd = false;
-            mManualToLoad = false;
-        }
-
-        void setError() {
-            mLoading = false;
-            mError = true;
-            mEnd = false;
-            mManualToLoad = false;
-        }
-
-        void setEnd(boolean end) {
-            mLoading = false;
-            mError = false;
-            mEnd = end;
-            mManualToLoad = false;
-        }
-
-        public void setManualToLoad() {
-            mLoading = false;
-            mError = false;
-            mEnd = false;
-            mManualToLoad = true;
-        }
     }
 
 }

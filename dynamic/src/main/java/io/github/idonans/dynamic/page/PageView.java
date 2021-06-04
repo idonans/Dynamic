@@ -2,15 +2,13 @@ package io.github.idonans.dynamic.page;
 
 import androidx.annotation.NonNull;
 
-import io.github.idonans.dynamic.DynamicView;
-
 import java.util.Collection;
+
+import io.github.idonans.dynamic.DynamicView;
 
 public interface PageView<E> extends DynamicView {
 
     boolean isClearPageContentWhenRequestInit();
-
-    boolean hasPageContent();
 
     void showInitLoading();
 

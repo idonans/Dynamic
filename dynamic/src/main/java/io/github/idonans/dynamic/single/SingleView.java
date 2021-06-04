@@ -2,24 +2,13 @@ package io.github.idonans.dynamic.single;
 
 import androidx.annotation.NonNull;
 
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.DynamicView;
 
-import java.util.Collection;
+public interface SingleView<A, B> extends DynamicView {
 
-public interface SingleView<E> extends DynamicView {
+    void onInitRequest();
 
-    boolean isClearContentWhenRequestInit();
-
-    boolean hasContent();
-
-    void showInitLoading();
-
-    void hideInitLoading();
-
-    void onInitDataLoad(@NonNull Collection<E> items);
-
-    void onInitDataEmpty();
-
-    void onInitDataLoadFail(@NonNull Throwable e);
+    void onInitRequestResult(@NonNull DynamicResult<A, B> result);
 
 }

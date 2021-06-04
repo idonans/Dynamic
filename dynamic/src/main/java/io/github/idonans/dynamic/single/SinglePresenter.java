@@ -1,28 +1,26 @@
 package io.github.idonans.dynamic.single;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 
-import io.github.idonans.dynamic.DynamicPresenter;
-import io.github.idonans.dynamic.DynamicLog;
-import io.github.idonans.lang.DisposableHolder;
-
-import java.util.Collection;
 import java.util.Objects;
 
+import io.github.idonans.dynamic.DynamicLog;
+import io.github.idonans.dynamic.DynamicPresenter;
+import io.github.idonans.dynamic.DynamicResult;
+import io.github.idonans.dynamic.RequestStatus;
+import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 import io.reactivex.rxjava3.functions.Function;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public abstract class SinglePresenter<E, T extends SingleView<E>> extends DynamicPresenter<T> {
+public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends DynamicPresenter<T> {
 
     protected final DisposableHolder mInitRequestHolder = new DisposableHolder();
-    protected final DisposableHolder[] mRequestHolders = {mInitRequestHolder};
 
     @NonNull
     private final RequestStatus mInitRequestStatus;
@@ -31,47 +29,12 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
         super(view);
 
         mInitRequestStatus = new RequestStatus();
+        mRequestHolderList.add(mInitRequestHolder);
     }
 
-    /**
-     * 除了指定的请求外，清除其它请求。
-     *
-     * @param excepts
-     */
-    @UiThread
-    protected void clearRequestExcept(DisposableHolder... excepts) {
-        for (DisposableHolder target : mRequestHolders) {
-            boolean matchExcept = false;
-            if (excepts != null) {
-                for (DisposableHolder except : excepts) {
-                    if (target == except) {
-                        matchExcept = true;
-                        break;
-                    }
-                }
-            }
-            if (!matchExcept) {
-                if (target != null) {
-                    target.clear();
-                }
-            }
-        }
-    }
-
-    /**
-     * 清除指定请求
-     *
-     * @param targets
-     */
-    @UiThread
-    protected void clearRequest(DisposableHolder... targets) {
-        if (targets != null) {
-            for (DisposableHolder target : targets) {
-                if (target != null) {
-                    target.clear();
-                }
-            }
-        }
+    @NonNull
+    public RequestStatus getInitRequestStatus() {
+        return mInitRequestStatus;
     }
 
     @UiThread
@@ -80,107 +43,74 @@ public abstract class SinglePresenter<E, T extends SingleView<E>> extends Dynami
     }
 
     /**
-     * 请求初始数据。
-     * <br/>当发起请求初始数据时，会中断旧的初始数据请求，上一页数据请求和下一页数据请求。
+     * 请求初始数据
      */
     @UiThread
     public void requestInit(boolean force) {
         DynamicLog.v("requestInit force:%s", force);
 
-        SingleView<E> view = getView();
-        if (view == null) {
-            DynamicLog.e("view is null");
-            return;
+        {
+            SingleView<A, B> view = getView();
+            if (view == null) {
+                DynamicLog.e("view is null");
+                return;
+            }
+
+            if (!force && !mInitRequestStatus.allowRequest()) {
+                return;
+            }
+
+            onInitRequest(view);
         }
-
-        if (!force && !mInitRequestStatus.allowRequest()) {
-            return;
-        }
-
-        clearRequestExcept();
-
-        mInitRequestStatus.setLoading();
-        view.showInitLoading();
 
         mInitRequestHolder.set(Single.just(this)
-                .flatMap((Function<Object, SingleSource<Collection<E>>>) object -> createInitRequest())
+                .flatMap((Function<Object, SingleSource<DynamicResult<A, B>>>) object -> createInitRequest())
                 .map(Objects::requireNonNull)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(items -> {
-                    SingleView<E> innerView = getView();
+                .subscribe(result -> {
+                    final SingleView<A, B> innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
                     }
 
-                    mInitRequestStatus.setEnd(items.isEmpty());
-                    innerView.hideInitLoading();
-
-                    onInitRequestResult(innerView, items);
+                    onInitRequestResult(innerView, result);
                 }, e -> {
-                    SingleView<E> innerView = getView();
+                    final SingleView<A, B> innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
                     }
 
-                    mInitRequestStatus.setError();
-                    innerView.hideInitLoading();
-
-                    onInitRequestError(innerView, e);
+                    onInitRequestResult(innerView, new DynamicResult<A, B>().setError(e));
                 }));
     }
 
     @WorkerThread
     @Nullable
-    protected abstract SingleSource<Collection<E>> createInitRequest() throws Exception;
+    protected abstract SingleSource<DynamicResult<A, B>> createInitRequest() throws Exception;
 
-    @CallSuper
     @UiThread
-    protected void onInitRequestResult(@NonNull SingleView<E> view, @NonNull Collection<E> items) {
-        DynamicLog.v("onInitRequestResult %s items", items.size());
-        view.onInitDataLoad(items);
-        if (items.isEmpty()) {
-            view.onInitDataEmpty();
-        }
+    protected void onInitRequest(@NonNull SingleView<A, B> view) {
+        DynamicLog.v("onInitRequest");
+
+        clearRequestExcept();
+        mInitRequestStatus.setLoading();
+        view.onInitRequest();
     }
 
-    @CallSuper
     @UiThread
-    protected void onInitRequestError(@NonNull SingleView<E> view, @NonNull Throwable e) {
-        DynamicLog.e(e, "onInitRequestError");
-        view.onInitDataLoadFail(e);
-    }
+    protected void onInitRequestResult(@NonNull SingleView<A, B> view, @NonNull DynamicResult<A, B> result) {
+        DynamicLog.v("onInitRequestResult");
 
-    private static class RequestStatus {
-
-        private boolean mLoading;
-        private boolean mError;
-        private boolean mEnd;
-
-        boolean allowRequest() {
-            return !this.mLoading && !this.mError && !this.mEnd;
+        if (result.error != null) {
+            mInitRequestStatus.setError();
+        } else {
+            mInitRequestStatus.setEnd(true);
         }
 
-        void setLoading() {
-            mLoading = true;
-            mError = false;
-            mEnd = false;
-        }
-
-        void setError() {
-            mLoading = false;
-            mError = true;
-            mEnd = false;
-        }
-
-        void setEnd(boolean end) {
-            mLoading = false;
-            mError = false;
-            mEnd = end;
-        }
-
+        view.onInitRequestResult(result);
     }
 
 }
