@@ -12,7 +12,6 @@ import io.github.idonans.dynamic.DynamicLog;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.RequestStatus;
 import io.github.idonans.dynamic.single.SinglePresenter;
-import io.github.idonans.dynamic.single.SingleView;
 import io.github.idonans.lang.DisposableHolder;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Single;
@@ -75,7 +74,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
      * 当发起请求初始数据时，会中断旧的初始数据请求，上一页数据请求和下一页数据请求。
      */
     @Override
-    protected void onInitRequest(@NonNull SingleView<A, B> view) {
+    protected void onInitRequest(@NonNull T view) {
         mPrePageRequestStatus.reset();
         mNextPageRequestStatus.reset();
 
@@ -97,7 +96,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
         DynamicLog.v("requestPrePage force:%s", force);
 
         {
-            final PageView<A, B> view = getView();
+            final T view = getView();
             if (view == null) {
                 DynamicLog.e("view is null");
                 return;
@@ -121,7 +120,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    final PageView<A, B> innerView = getView();
+                    final T innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
@@ -129,7 +128,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
 
                     onPrePageRequestResult(innerView, result);
                 }, e -> {
-                    final PageView<A, B> innerView = getView();
+                    final T innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
@@ -140,7 +139,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
     }
 
     @UiThread
-    protected void onPrePageRequest(@NonNull PageView<A, B> view) {
+    protected void onPrePageRequest(@NonNull T view) {
         DynamicLog.v("onPrePageRequest");
 
         clearRequestExcept(mNextPageRequestHolder);
@@ -157,7 +156,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
 
     @CallSuper
     @UiThread
-    protected void onPrePageRequestResult(@NonNull PageView<A, B> view, @NonNull DynamicResult<A, B> result) {
+    protected void onPrePageRequestResult(@NonNull T view, @NonNull DynamicResult<A, B> result) {
         DynamicLog.v("onPrePageRequestResult");
 
         if (result.isError()) {
@@ -183,7 +182,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
         DynamicLog.v("requestNextPage force:%s", force);
 
         {
-            final PageView<A, B> view = getView();
+            final T view = getView();
             if (view == null) {
                 DynamicLog.e("view is null");
                 return;
@@ -207,7 +206,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    final PageView<A, B> innerView = getView();
+                    final T innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
@@ -215,7 +214,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
 
                     onNextPageRequestResult(innerView, result);
                 }, e -> {
-                    final PageView<A, B> innerView = getView();
+                    final T innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
@@ -226,7 +225,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
     }
 
     @UiThread
-    protected void onNextPageRequest(@NonNull PageView<A, B> view) {
+    protected void onNextPageRequest(@NonNull T view) {
         DynamicLog.v("onNextPageRequest");
 
         clearRequestExcept(mPrePageRequestHolder);
@@ -243,7 +242,7 @@ public abstract class PagePresenter<A, B, T extends PageView<A, B>> extends Sing
 
     @CallSuper
     @UiThread
-    protected void onNextPageRequestResult(@NonNull PageView<A, B> view, @NonNull DynamicResult<A, B> result) {
+    protected void onNextPageRequestResult(@NonNull T view, @NonNull DynamicResult<A, B> result) {
         DynamicLog.v("onNextPageRequestResult");
 
         if (result.isError()) {

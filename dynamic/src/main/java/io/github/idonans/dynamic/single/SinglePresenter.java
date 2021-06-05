@@ -50,7 +50,7 @@ public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends 
         DynamicLog.v("requestInit force:%s", force);
 
         {
-            final SingleView<A, B> view = getView();
+            final T view = getView();
             if (view == null) {
                 DynamicLog.e("view is null");
                 return;
@@ -69,7 +69,7 @@ public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    final SingleView<A, B> innerView = getView();
+                    final T innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
@@ -77,7 +77,7 @@ public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends 
 
                     onInitRequestResult(innerView, result);
                 }, e -> {
-                    final SingleView<A, B> innerView = getView();
+                    final T innerView = getView();
                     if (innerView == null) {
                         DynamicLog.e("view is null");
                         return;
@@ -92,7 +92,7 @@ public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends 
     protected abstract SingleSource<DynamicResult<A, B>> createInitRequest() throws Exception;
 
     @UiThread
-    protected void onInitRequest(@NonNull SingleView<A, B> view) {
+    protected void onInitRequest(@NonNull T view) {
         DynamicLog.v("onInitRequest");
 
         clearRequestExcept();
@@ -101,7 +101,7 @@ public abstract class SinglePresenter<A, B, T extends SingleView<A, B>> extends 
     }
 
     @UiThread
-    protected void onInitRequestResult(@NonNull SingleView<A, B> view, @NonNull DynamicResult<A, B> result) {
+    protected void onInitRequestResult(@NonNull T view, @NonNull DynamicResult<A, B> result) {
         DynamicLog.v("onInitRequestResult");
 
         if (result.isError()) {
