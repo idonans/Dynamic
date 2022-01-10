@@ -22,8 +22,9 @@ public class UnionTypeLoadingStatusViewHolder extends UnionTypeViewHolder {
         View retry = itemView.findViewById(R.id.retry);
         if (retry != null) {
             ViewUtil.onClick(retry, v -> {
-                if (itemObject instanceof LoadingStatusCallbackHost) {
-                    LoadingStatusCallback callback = ((LoadingStatusCallbackHost) itemObject).getLoadingStatusCallback();
+                final LoadingStatusCallbackHost callbackHost = getItemObject(LoadingStatusCallbackHost.class);
+                if (callbackHost != null) {
+                    LoadingStatusCallback callback = callbackHost.getLoadingStatusCallback();
                     if (callback != null) {
                         callback.onRetry();
                     }
