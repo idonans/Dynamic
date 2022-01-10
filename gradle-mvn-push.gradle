@@ -103,8 +103,6 @@ task javadocs(type: Javadoc) {
     options.addStringOption('encoding', 'utf-8')
     options.addStringOption('docencoding', 'utf-8')
 
-    exclude 'com/masonsoft/imsdk/core/**/*'
-
     failOnError = false
 }
 
